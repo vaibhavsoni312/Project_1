@@ -1,1 +1,18 @@
-@import "tailwindcss"
+@import "tailwindcss";
+*{
+    margin : 0;
+    padding : 0;
+    box-sizing: border-box;
+}
+html{
+    scroll-behavior: smooth;
+}
+.body{
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: 'Times New Roman', Times, serif;
+}
+#root{
+    min-height: 100vh;
+
+}
