@@ -1,0 +1,519 @@
+/* ================================
+   RECORD PAGE
+================================ */
+
+.record-page {
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(139, 92, 246, 0.10),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 80%,
+      rgba(236, 72, 153, 0.08),
+      transparent 30%
+    ),
+    #faf9fc;
+
+  color: #292633;
+  font-family: Inter, Arial, sans-serif;
+
+  padding-bottom: 50px;
+}
+
+
+/* ================================
+   HEADER
+================================ */
+
+.record-header {
+  width: 100%;
+  height: 82px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 55px;
+  box-sizing: border-box;
+
+  border-bottom: 1px solid #ece8f2;
+  background: rgba(255, 255, 255, 0.75);
+
+  backdrop-filter: blur(12px);
+}
+
+
+/* Logo */
+
+.record-logo {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+
+  color: #332c3d;
+}
+
+.record-logo span {
+  color: #8665c7;
+}
+
+
+/* Title */
+
+.record-title {
+  text-align: right;
+}
+
+.record-title h1 {
+  margin: 0;
+
+  font-size: 22px;
+  font-weight: 700;
+
+  color: #302b38;
+}
+
+.record-title p {
+  margin: 5px 0 0;
+
+  font-size: 13px;
+  color: #8b8493;
+}
+
+
+/* ================================
+   MAIN
+================================ */
+
+.record-main {
+  width: min(1050px, 92%);
+  margin: 42px auto 0;
+}
+
+
+/* ================================
+   CAMERA CARD
+================================ */
+
+.camera-card {
+  width: 100%;
+
+  background: #ffffff;
+
+  border: 1px solid #e8e3ee;
+  border-radius: 22px;
+
+  padding: 20px;
+
+  box-sizing: border-box;
+
+  box-shadow:
+    0 12px 35px rgba(65, 48, 84, 0.07);
+}
+
+
+/* Camera top */
+
+.camera-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 15px;
+}
+
+.camera-label {
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 1.2px;
+
+  color: #746c7d;
+}
+
+
+/* Recording indicator */
+
+.recording-indicator {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  color: #e05270;
+}
+
+.record-dot {
+  width: 7px;
+  height: 7px;
+
+  background: #e05270;
+  border-radius: 50%;
+
+  animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+
+/* ================================
+   CAMERA
+================================ */
+
+.camera-container {
+  position: relative;
+
+  width: 100%;
+  height: 510px;
+
+  overflow: hidden;
+
+  background: #f1eef5;
+
+  border-radius: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* Actual camera */
+
+.camera-video {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: none;
+}
+
+.camera-video.camera-active {
+  display: block;
+}
+
+
+/* Placeholder */
+
+.camera-placeholder {
+  text-align: center;
+  color: #81798b;
+}
+
+.camera-icon {
+  width: 58px;
+  height: 58px;
+
+  margin: 0 auto 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 16px;
+
+  background: #f0eafa;
+
+  color: #8062c2;
+
+  font-size: 24px;
+}
+
+.camera-placeholder h2 {
+  margin: 0;
+
+  font-size: 18px;
+  font-weight: 650;
+
+  color: #40394a;
+}
+
+.camera-placeholder p {
+  margin: 7px 0 0;
+
+  font-size: 13px;
+
+  color: #918a99;
+}
+
+
+/* ================================
+   CONTROLS
+================================ */
+
+.record-controls {
+  display: flex;
+  justify-content: center;
+
+  padding-top: 20px;
+}
+
+
+/* Start button */
+
+.start-record-btn {
+  height: 48px;
+
+  padding: 0 28px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  border: none;
+  border-radius: 11px;
+
+  background: #8263c5;
+
+  color: white;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  letter-spacing: 0.3px;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.start-record-btn:hover {
+  background: #7353b7;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 8px 20px rgba(130, 99, 197, 0.25);
+}
+
+
+/* Record circle */
+
+.record-circle {
+  width: 10px;
+  height: 10px;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+}
+
+
+/* Active controls */
+
+.active-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+
+/* Pause */
+
+.pause-btn,
+.resume-btn {
+  height: 46px;
+
+  padding: 0 22px;
+
+  border-radius: 10px;
+
+  border: 1px solid #ded7e8;
+
+  background: #ffffff;
+
+  color: #655c70;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.pause-btn:hover,
+.resume-btn:hover {
+  background: #f5f1fa;
+  border-color: #cfc3df;
+}
+
+
+/* End */
+
+.end-btn {
+  height: 46px;
+
+  padding: 0 22px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #f5e8ed;
+
+  color: #b94e68;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.end-btn:hover {
+  background: #f1dce3;
+}
+
+
+/* ================================
+   SESSION INFO
+================================ */
+
+.session-info {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 15px;
+
+  margin-top: 18px;
+}
+
+.info-item {
+  padding: 17px 20px;
+
+  background: rgba(255, 255, 255, 0.85);
+
+  border: 1px solid #ebe6f0;
+  border-radius: 14px;
+}
+
+.info-item span {
+  display: block;
+
+  margin-bottom: 6px;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 1px;
+
+  color: #968e9e;
+}
+
+.info-item strong {
+  font-size: 13px;
+  font-weight: 600;
+
+  color: #4b4354;
+}
+
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 750px) {
+
+  .record-header {
+    height: auto;
+
+    padding: 20px 25px;
+
+    flex-direction: column;
+    align-items: flex-start;
+
+    gap: 10px;
+  }
+
+  .record-title {
+    text-align: left;
+  }
+
+  .record-main {
+    width: 92%;
+    margin-top: 25px;
+  }
+
+  .camera-container {
+    height: 380px;
+  }
+
+  .session-info {
+    grid-template-columns: 1fr;
+  }
+
+  .active-controls {
+    width: 100%;
+
+    justify-content: center;
+  }
+}
+
+
+@media (max-width: 480px) {
+
+  .camera-container {
+    height: 300px;
+  }
+
+  .start-record-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .active-controls {
+    flex-direction: column;
+  }
+
+  .pause-btn,
+  .resume-btn,
+  .end-btn {
+    width: 100%;
+  }
+}
+.back-button {
+  margin-bottom: 18px;
+
+  border: none;
+  background: transparent;
+
+  color: #8062c2;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.back-button:hover {
+  transform: translateX(-3px);
+  color: #684ba8;
+}

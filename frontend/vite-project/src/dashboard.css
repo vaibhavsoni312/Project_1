@@ -1,0 +1,383 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.dashboard {
+  min-height: 100vh;
+  width: 100%;
+
+  background:
+    radial-gradient(
+      circle at 10% 15%,
+      rgba(225, 216, 250, 0.45),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 90% 80%,
+      rgba(255, 224, 230, 0.35),
+      transparent 30%
+    ),
+    #faf9fc;
+
+  color: #242128;
+}
+
+
+/* ================= NAVBAR ================= */
+
+.dashboard-nav {
+  width: calc(100% - 48px);
+  height: 74px;
+
+  margin: 20px auto 0;
+
+  padding: 0 28px;
+
+  background: rgba(255, 255, 255, 0.82);
+
+  border: 1px solid rgba(35, 30, 40, 0.06);
+
+  border-radius: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  box-shadow:
+    0 8px 30px rgba(40, 30, 55, 0.05);
+
+  backdrop-filter: blur(14px);
+}
+
+
+/* Logo */
+
+.dashboard-logo {
+  font-size: 23px;
+  font-weight: 700;
+
+  letter-spacing: -0.8px;
+
+  color: #201d24;
+}
+
+.dashboard-logo span {
+  color: #7957c8;
+}
+
+
+/* Profile */
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: #38343d;
+}
+
+.profile-circle {
+  width: 36px;
+  height: 36px;
+
+  border-radius: 50%;
+
+  background: #7957c8;
+
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.profile-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.dropdown {
+  margin-left: 3px;
+
+  color: #89848d;
+
+  font-size: 17px;
+}
+
+
+/* ================= MAIN ================= */
+
+.dashboard-main {
+  width: 100%;
+
+  padding: 95px 40px 80px;
+}
+
+
+/* Welcome */
+
+.welcome-section {
+  text-align: center;
+
+  margin-bottom: 55px;
+}
+
+.welcome-section h1 {
+  font-size: clamp(36px, 4vw, 52px);
+
+  font-weight: 600;
+
+  letter-spacing: -1.8px;
+
+  color: #242128;
+}
+
+.welcome-section h1 span {
+  color: #7957c8;
+}
+
+.welcome-section p {
+  margin-top: 12px;
+
+  color: #77727d;
+
+  font-size: 16px;
+}
+
+
+/* ================= CARDS ================= */
+
+.dashboard-cards {
+  width: min(1050px, 100%);
+
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 28px;
+}
+
+
+.dashboard-card {
+  min-height: 390px;
+
+  padding: 42px 32px 34px;
+
+  border-radius: 22px;
+
+  background: rgba(255, 255, 255, 0.72);
+
+  border: 1px solid rgba(35, 30, 40, 0.07);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+
+  box-shadow:
+    0 15px 45px rgba(40, 30, 55, 0.055);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-6px);
+
+  box-shadow:
+    0 22px 50px rgba(40, 30, 55, 0.09);
+}
+
+
+/* Individual subtle backgrounds */
+
+.record-card {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(247, 244, 255, 0.95),
+      rgba(255, 255, 255, 0.8)
+    );
+}
+
+.activity-card {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 247, 250, 0.95),
+      rgba(255, 255, 255, 0.8)
+    );
+}
+
+.progress-card {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 250, 246, 0.95),
+      rgba(255, 255, 255, 0.8)
+    );
+}
+
+
+/* ================= ICON ================= */
+
+.card-icon {
+  width: 62px;
+  height: 62px;
+
+  margin-bottom: 30px;
+
+  border-radius: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 27px;
+
+  font-weight: 400;
+}
+
+.record-card .card-icon {
+  color: #7957c8;
+  background: #eee9ff;
+}
+
+.activity-card .card-icon {
+  color: #d94c86;
+  background: #ffeaf2;
+}
+
+.progress-card .card-icon {
+  color: #e87532;
+  background: #fff0e5;
+}
+
+
+/* ================= CARD TEXT ================= */
+
+.dashboard-card h2 {
+  font-size: 22px;
+
+  font-weight: 600;
+
+  letter-spacing: -0.5px;
+
+  color: #25212a;
+}
+
+.dashboard-card p {
+  max-width: 220px;
+
+  margin-top: 12px;
+
+  color: #77727d;
+
+  font-size: 14px;
+
+  line-height: 1.65;
+}
+
+
+/* ================= BUTTON ================= */
+
+.card-button {
+  width: 45px;
+  height: 45px;
+
+  margin-top: auto;
+
+  border: none;
+
+  border-radius: 50%;
+
+  color: white;
+
+  font-size: 21px;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.record-card .card-button {
+  background: #7957c8;
+}
+
+.activity-card .card-button {
+  background: #df4f8b;
+}
+
+.progress-card .card-button {
+  background: #ef8038;
+}
+
+.card-button:hover {
+  transform: scale(1.08);
+}
+
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 850px) {
+
+  .dashboard-cards {
+    grid-template-columns: 1fr;
+
+    max-width: 430px;
+  }
+
+  .dashboard-card {
+    min-height: 330px;
+  }
+
+  .dashboard-main {
+    padding-top: 65px;
+  }
+}
+
+
+@media (max-width: 600px) {
+
+  .dashboard-nav {
+    width: calc(100% - 24px);
+
+    margin-top: 12px;
+
+    padding: 0 17px;
+  }
+
+  .dashboard-logo {
+    font-size: 19px;
+  }
+
+  .profile-name {
+    display: none;
+  }
+
+  .dashboard-main {
+    padding: 55px 18px;
+  }
+
+  .welcome-section {
+    margin-bottom: 38px;
+  }
+
+  .welcome-section h1 {
+    font-size: 34px;
+  }
+
+  .dashboard-cards {
+    gap: 18px;
+  }
+}
