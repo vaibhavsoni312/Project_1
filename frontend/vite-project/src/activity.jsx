@@ -1,367 +1,220 @@
 import "./activity.css";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getSessions } from "./api";
 
 function Activity() {
   const navigate = useNavigate();
-  const sessions = [
-    {
-      id: 6,
-      date: "Today",
-      time: "08:42",
-      title: "Interview Practice",
-      score: 78,
-      confidence: 82,
-      eyeContact: 74,
-      pace: 81,
-      fillerWords: 17,
-      moments: 4,
-      status: "Strong",
-    },
-    {
-      id: 5,
-      date: "Yesterday",
-      time: "06:31",
-      title: "Technical Interview",
-      score: 74,
-      confidence: 78,
-      eyeContact: 71,
-      pace: 78,
-      fillerWords: 19,
-      moments: 5,
-      status: "Good",
-    },
-    {
-      id: 4,
-      date: "Aug 07",
-      time: "09:12",
-      title: "Presentation Practice",
-      score: 70,
-      confidence: 74,
-      eyeContact: 68,
-      pace: 75,
-      fillerWords: 21,
-      moments: 6,
-      status: "Good",
-    },
-    {
-      id: 3,
-      date: "Aug 05",
-      time: "07:48",
-      title: "HR Interview",
-      score: 66,
-      confidence: 70,
-      eyeContact: 63,
-      pace: 71,
-      fillerWords: 24,
-      moments: 7,
-      status: "Improving",
-    },
-    {
-      id: 2,
-      date: "Aug 03",
-      time: "05:26",
-      title: "Self Introduction",
-      score: 63,
-      confidence: 66,
-      eyeContact: 59,
-      pace: 67,
-      fillerWords: 27,
-      moments: 8,
-      status: "Improving",
-    },
-    {
-      id: 1,
-      date: "Aug 01",
-      time: "06:14",
-      title: "First Practice",
-      score: 61,
-      confidence: 61,
-      eyeContact: 54,
-      pace: 63,
-      fillerWords: 31,
-      moments: 9,
-      status: "First Session",
-    },
-  ];
+  const [sessions, setSessions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("vibecheckToken");
+
+    if (!token) {
+      navigate("/");
+      return;
+    }
+
+    getSessions(token)
+      .then((data) => {
+        setSessions(data);
+      })
+      .catch((err) => {
+        setError(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [navigate]);
+
+  const formatDate = (isoString) => {
+    if (!isoString) return "—";
+    const date = new Date(isoString);
+    return date.toLocaleDateString("en-US", { month: "short", day: "2-digit" });
+  };
+
+  const formatTime = (isoString) => {
+    if (!isoString) return "—";
+    const date = new Date(isoString);
+    return date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+  };
+
+  const getStatusLabel = (overallScore) => {
+    if (overallScore >= 75) return "Strong";
+    if (overallScore >= 60) return "Good";
+    return "Improving";
+  };
 
   return (
     <div className="activity-page">
 
       {/* HEADER */}
       <header className="activity-header">
-
         <div className="activity-logo">
           VIBECHECK<span>.</span>
         </div>
-
         <div className="activity-header-title">
           SESSION HISTORY
         </div>
-
       </header>
-
 
       <main className="activity-main">
         <button
-  className="activity-back-button"
-  onClick={() => navigate("/dashboard")}
->
-  ← Back to Dashboard
-</button>
+          className="activity-back-button"
+          onClick={() => navigate("/dashboard")}
+        >
+          ← Back to Dashboard
+        </button>
 
         {/* INTRO */}
         <section className="activity-intro">
-
           <div>
-
-            <p className="eyebrow">
-              YOUR SESSIONS
-            </p>
-
-            <h1>
-              Everything you've practiced.
-            </h1>
-
+            <p className="eyebrow">YOUR SESSIONS</p>
+            <h1>Everything you've practiced.</h1>
             <p>
               Revisit your recordings, understand your
               performance, and see how you've improved.
             </p>
-
           </div>
 
           <div className="total-sessions">
-
-            <strong>
-              {sessions.length}
-            </strong>
-
-            <span>
-              SESSIONS
-            </span>
-
+            <strong>{sessions.length}</strong>
+            <span>SESSIONS</span>
           </div>
-
         </section>
 
+        {/* LOADING / ERROR */}
+        {loading && (
+          <p style={{ textAlign: "center", color: "#8b8493", padding: "40px 0" }}>
+            Loading your sessions...
+          </p>
+        )}
 
-        {/* FILTER */}
-        <div className="activity-toolbar">
+        {error && (
+          <p style={{ textAlign: "center", color: "#d36b7c", padding: "40px 0" }}>
+            {error}
+          </p>
+        )}
 
-          <div className="filter-left">
-
-            <button className="filter-button active">
-              All Sessions
-            </button>
-
-            <button className="filter-button">
-              Interviews
-            </button>
-
-            <button className="filter-button">
-              Presentations
-            </button>
-
-          </div>
-
-          <span className="latest-label">
-            Latest first
-          </span>
-
-        </div>
-
+        {!loading && !error && sessions.length === 0 && (
+          <p style={{ textAlign: "center", color: "#8b8493", padding: "40px 0" }}>
+            No sessions yet — go record your first practice!
+          </p>
+        )}
 
         {/* SESSION LIST */}
-        <section className="sessions-list">
+        {!loading && !error && sessions.length > 0 && (
+          <section className="sessions-list">
+            {sessions.map((session, index) => {
+              const scores = session.final_scores;
 
-          {sessions.map((session) => (
+              if (!scores) {
+                return null;
+              }
 
-            <article
-              className="session-card"
-              key={session.id}
-            >
+              const highLevel = scores.high_level;
+              const overallScore = Math.round(
+                (highLevel.communication + highLevel.confidence + highLevel.body_language) / 3
+              );
+              const status = getStatusLabel(overallScore);
 
-              {/* SESSION LEFT */}
-              <div className="session-main">
+              return (
+                <article className="session-card" key={session.id}>
 
-                <div className="session-top">
+                  <div className="session-main">
+                    <div className="session-top">
+                      <div>
+                        <span className="session-number">
+                          SESSION {String(sessions.length - index).padStart(2, "0")}
+                        </span>
+                        <h2>Practice Session</h2>
+                        <p className="session-date">
+                          {formatDate(session.uploaded_at)} · {formatTime(session.uploaded_at)}
+                        </p>
+                      </div>
 
-                  <div>
+                      <span className={`session-status status-${status.toLowerCase()}`}>
+                        {status}
+                      </span>
+                    </div>
 
-                    <span className="session-number">
-                      SESSION {String(session.id).padStart(2, "0")}
-                    </span>
+                    <div className="session-metrics">
+                      <div className="session-metric score-metric">
+                        <span>OVERALL</span>
+                        <strong>{overallScore}</strong>
+                        <small>/100</small>
+                      </div>
 
-                    <h2>
-                      {session.title}
-                    </h2>
+                      <div className="session-metric">
+                        <span>CONFIDENCE</span>
+                        <strong>{Math.round(highLevel.confidence)}%</strong>
+                      </div>
 
-                    <p className="session-date">
-                      {session.date} · {session.time}
-                    </p>
+                      <div className="session-metric">
+                        <span>EYE CONTACT</span>
+                        <strong>{Math.round(scores.eye_contact.eye_contact_percentage)}%</strong>
+                      </div>
 
+                      <div className="session-metric">
+                        <span>PACE</span>
+                        <strong>{Math.round(scores.voice.rate_score)}%</strong>
+                      </div>
+
+                      <div className="session-metric filler-metric">
+                        <span>FILLER WORDS</span>
+                        <strong>{scores.voice.filler_rate}%</strong>
+                      </div>
+                    </div>
+
+                    <div className="session-bottom">
+                      <span className="moments-info">
+                        <span className="moment-dot"></span>
+                        Analysis complete
+                      </span>
+                      <span className="analysis-ready">
+                        Analysis ready
+                      </span>
+                    </div>
                   </div>
 
-                  <span
-                    className={`session-status status-${session.status
-                      .toLowerCase()
-                      .replace(" ", "-")}`}
-                  >
-                    {session.status}
-                  </span>
-
-                </div>
-
-
-                {/* METRICS */}
-                <div className="session-metrics">
-
-                  <div className="session-metric score-metric">
-
-                    <span>
-                      OVERALL
-                    </span>
-
-                    <strong>
-                      {session.score}
-                    </strong>
-
-                    <small>
-                      /100
-                    </small>
-
+                  <div className="recording-preview">
+                    <div className="recording-screen">
+                      <div className="recording-play">▶</div>
+                      <span>RECORDING</span>
+                    </div>
+                    <div className="recording-time">
+                      {formatTime(session.uploaded_at)}
+                    </div>
                   </div>
 
+                  <div className="session-action">
+                    <button className="view-recording">
+                      ▶
+                      <span>Recording</span>
+                    </button>
 
-                  <div className="session-metric">
-
-                    <span>
-                      CONFIDENCE
-                    </span>
-
-                    <strong>
-                      {session.confidence}%
-                    </strong>
-
+                    <button
+                      className="view-analysis"
+                      onClick={() => navigate("/analysis", { state: session })}
+                    >
+                      View Analysis
+                      <span>→</span>
+                    </button>
                   </div>
 
+                </article>
+              );
+            })}
+          </section>
+        )}
 
-                  <div className="session-metric">
-
-                    <span>
-                      EYE CONTACT
-                    </span>
-
-                    <strong>
-                      {session.eyeContact}%
-                    </strong>
-
-                  </div>
-
-
-                  <div className="session-metric">
-
-                    <span>
-                      PACE
-                    </span>
-
-                    <strong>
-                      {session.pace}%
-                    </strong>
-
-                  </div>
-
-
-                  <div className="session-metric filler-metric">
-
-                    <span>
-                      FILLER WORDS
-                    </span>
-
-                    <strong>
-                      {session.fillerWords}
-                    </strong>
-
-                  </div>
-
-                </div>
-
-
-                {/* MOMENTS */}
-                <div className="session-bottom">
-
-                  <span className="moments-info">
-                    <span className="moment-dot"></span>
-
-                    {session.moments} important moments detected
-                  </span>
-
-                  <span className="analysis-ready">
-                    Analysis ready
-                  </span>
-
-                </div>
-
-              </div>
-
-
-              {/* RECORDING */}
-              <div className="recording-preview">
-
-                <div className="recording-screen">
-
-                  <div className="recording-play">
-                    ▶
-                  </div>
-
-                  <span>
-                    RECORDING
-                  </span>
-
-                </div>
-
-                <div className="recording-time">
-                  {session.time}
-                </div>
-
-              </div>
-
-
-              {/* ACTION */}
-              <div className="session-action">
-
-                <button className="view-recording">
-                  ▶
-                  <span>Recording</span>
-                </button>
-
-               <button
-  className="view-analysis"
-  onClick={() => navigate("/analysis")}
->
-  View Analysis
-  <span>→</span>
-</button>
-
-              </div>
-
-            </article>
-
-          ))}
-
-        </section>
-
-
-        {/* EMPTY FUTURE MESSAGE */}
         <div className="activity-footer">
-
-          <span>
-            Keep practicing to build your performance history.
-          </span>
-
+          <span>Keep practicing to build your performance history.</span>
         </div>
 
       </main>
-
     </div>
   );
 }

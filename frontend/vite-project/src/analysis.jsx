@@ -1,56 +1,71 @@
 import "./analysis.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Analysis() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const result = location.state;
+
+  // Agar koi seedha /analysis URL pe aa gaya bina record kiye,
+  // to result null hoga — us case ko handle karo
+  if (!result || !result.final_scores) {
+    return (
+      <div className="analysis-page">
+        <main className="analysis-main" style={{ textAlign: "center", paddingTop: "80px" }}>
+          <h1>No analysis data found.</h1>
+          <p style={{ marginTop: "12px", color: "#8b8493" }}>
+            Please record a session first.
+          </p>
+          <button
+            className="back-button"
+            style={{ marginTop: "20px" }}
+            onClick={() => navigate("/record")}
+          >
+            ← Go to Record
+          </button>
+        </main>
+      </div>
+    );
+  }
+
+  const scores = result.final_scores;
+  const feedback = result.feedback || [];
+
+  const voice = scores.voice;
+  const eye = scores.eye_contact;
+  const emotion = scores.emotion;
+  const head = scores.head_pose;
+  const highLevel = scores.high_level;
+
+  const overallScore = Math.round(
+    (highLevel.communication + highLevel.confidence + highLevel.body_language) / 3
+  );
+
   const metrics = [
     {
       label: "Confidence",
-      value: "82%",
-      score: 82,
+      value: `${Math.round(highLevel.confidence)}%`,
+      score: highLevel.confidence,
       color: "#8b6ed8",
     },
     {
       label: "Eye Contact",
-      value: "74%",
-      score: 74,
+      value: `${Math.round(eye.eye_contact_percentage)}%`,
+      score: eye.eye_contact_score,
       color: "#63a8c9",
     },
     {
       label: "Speaking Pace",
-      value: "81%",
-      score: 81,
+      value: `${Math.round(voice.rate_score)}%`,
+      score: voice.rate_score,
       color: "#d69a63",
     },
     {
       label: "Filler Words",
-      value: "17",
-      score: 63,
+      value: `${voice.filler_rate}%`,
+      score: voice.filler_score,
       color: "#d87591",
-    },
-  ];
-
-  const moments = [
-    {
-      time: "00:48",
-      type: "Filler spike",
-      color: "#d87591",
-    },
-    {
-      time: "02:14",
-      type: "Confidence drop",
-      color: "#d96c7c",
-      active: true,
-    },
-    {
-      time: "03:42",
-      type: "Pace increase",
-      color: "#d69a63",
-    },
-    {
-      time: "05:18",
-      type: "Eye contact drop",
-      color: "#63a8c9",
     },
   ];
 
@@ -66,16 +81,19 @@ function Analysis() {
 
         <div className="analysis-header-right">
           <span>SESSION ANALYSIS</span>
-          <span className="session-duration">08:42</span>
+          <span className="session-duration">
+            {Math.floor(voice.duration / 60)}:{String(Math.round(voice.duration % 60)).padStart(2, "0")}
+          </span>
         </div>
 
       </header>
+
       <button
-  className="back-button"
-  onClick={() => navigate("/dashboard")}
->
-  ← Back to Dashboard
-</button>
+        className="back-button"
+        onClick={() => navigate("/dashboard")}
+      >
+        ← Back to Dashboard
+      </button>
 
 
       <main className="analysis-main">
@@ -102,7 +120,7 @@ function Analysis() {
           <div className="overall-score">
 
             <div className="score-number">
-              78
+              {overallScore}
               <span>/100</span>
             </div>
 
@@ -156,206 +174,36 @@ function Analysis() {
         </section>
 
 
-        {/* ================= TIMELINE ================= */}
-
-        <section className="timeline-section">
-
-          <div className="section-heading">
-
-            <div>
-              <p className="eyebrow">
-                SHARED TIMELINE
-              </p>
-
-              <h2>
-                Your performance, moment by moment.
-              </h2>
-            </div>
-
-            <span className="timeline-duration">
-              00:00 — 08:42
-            </span>
-
-          </div>
-
-
-          <div className="timeline">
-
-            <div className="timeline-line"></div>
-
-            {moments.map((moment, index) => (
-              <div
-                className={`timeline-moment ${
-                  moment.active ? "active" : ""
-                }`}
-                key={moment.time}
-                style={{
-                  left: `${12 + index * 23}%`,
-                }}
-              >
-
-                <div
-                  className="moment-dot"
-                  style={{
-                    background: moment.color,
-                  }}
-                ></div>
-
-                <div className="moment-label">
-                  <strong>{moment.time}</strong>
-                  <span>{moment.type}</span>
-                </div>
-
-              </div>
-            ))}
-
-            <div className="timeline-times">
-              <span>00:00</span>
-              <span>02:00</span>
-              <span>04:00</span>
-              <span>06:00</span>
-              <span>08:42</span>
-            </div>
-
-          </div>
-
-        </section>
-
-
-        {/* ================= VIDEO + INSIGHT ================= */}
+        {/* ================= INSIGHT / FEEDBACK ================= */}
 
         <section className="analysis-content">
 
-          {/* VIDEO */}
-
-          <div className="video-card">
-
-            <div className="card-heading">
-
-              <div>
-                <p className="eyebrow">
-                  SESSION PLAYBACK
-                </p>
-
-                <h2>
-                  Watch the moment.
-                </h2>
-              </div>
-
-              <span className="time-badge">
-                02:14
-              </span>
-
-            </div>
-
-
-            <div className="video-placeholder">
-
-              <div className="video-icon">
-                ▶
-              </div>
-
-              <span>
-                Video preview
-              </span>
-
-              <small>
-                Selected moment: 02:14
-              </small>
-
-            </div>
-
-
-            <div className="video-controls">
-
-              <button>
-                ▶
-              </button>
-
-              <div className="play-line">
-                <div className="play-progress"></div>
-              </div>
-
-              <span>
-                02:14 / 08:42
-              </span>
-
-            </div>
-
-          </div>
-
-
-          {/* INSIGHT */}
-
-          <div className="insight-card">
+          <div className="insight-card" style={{ gridColumn: "1 / -1" }}>
 
             <div className="insight-header">
 
               <div>
                 <p className="eyebrow">
-                  MOMENT INSIGHT
+                  AI FEEDBACK
                 </p>
 
                 <h2>
-                  02:14
+                  What we noticed.
                 </h2>
               </div>
 
-              <div className="warning-icon">
-                !
-              </div>
-
             </div>
-
-
-            <h3>
-              Your confidence dipped here.
-            </h3>
-
-            <p className="insight-description">
-              Your speaking pace increased while filler
-              words spiked and eye contact dropped.
-            </p>
-
-
-            <div className="delta-list">
-
-              <div className="delta-item">
-                <span>Speaking pace</span>
-                <strong className="positive">
-                  +23%
-                </strong>
-              </div>
-
-              <div className="delta-item">
-                <span>Filler words</span>
-                <strong className="negative">
-                  +41%
-                </strong>
-              </div>
-
-              <div className="delta-item">
-                <span>Eye contact</span>
-                <strong className="negative">
-                  -17%
-                </strong>
-              </div>
-
-            </div>
-
 
             <div className="ai-feedback">
-
               <span className="feedback-label">
-                AI FEEDBACK
+                SUGGESTIONS
               </span>
 
-              <p>
-                You rushed this answer. Try taking a
-                1–2 second pause before responding to
-                difficult questions.
-              </p>
-
+              {feedback.map((line, index) => (
+                <p key={index} style={{ marginTop: index === 0 ? "8px" : "10px" }}>
+                  {line}
+                </p>
+              ))}
             </div>
 
           </div>
@@ -363,24 +211,23 @@ function Analysis() {
         </section>
 
 
-        {/* ================= BOTTOM SUMMARY ================= */}
+        {/* ================= SUMMARY ================= */}
 
         <section className="summary-grid">
 
           <div className="summary-card">
 
             <p className="eyebrow">
-              WHAT WENT WELL
+              DOMINANT EMOTION
             </p>
 
-            <h2>
-              Strong foundation.
+            <h2 style={{ textTransform: "capitalize" }}>
+              {emotion.dominant_emotion}
             </h2>
 
             <ul>
-              <li>Strong opening delivery</li>
-              <li>Clear explanation of your ideas</li>
-              <li>Good overall posture</li>
+              <li>Confidence: {Math.round(emotion.emotion_confidence)}%</li>
+              <li>Emotion score: {Math.round(emotion.emotion_score)}/100</li>
             </ul>
 
           </div>
@@ -389,17 +236,17 @@ function Analysis() {
           <div className="summary-card improvement">
 
             <p className="eyebrow">
-              WHAT TO IMPROVE
+              VOICE DETAILS
             </p>
 
             <h2>
-              Focus on consistency.
+              Speaking breakdown.
             </h2>
 
             <ul>
-              <li>Slow down under pressure</li>
-              <li>Reduce “um” and “like”</li>
-              <li>Hold eye contact longer</li>
+              <li>Speaking rate: {voice.speaking_rate} wpm</li>
+              <li>Pauses: {voice.pause_count}</li>
+              <li>Filler rate: {voice.filler_rate}%</li>
             </ul>
 
           </div>

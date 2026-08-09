@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+python-multipart
+python-dotenv
+motor
+python-jose[cryptography]
+passlib[bcrypt]
+bcrypt<4.1
+pydantic[email]
+opencv-python
+mediapipe
+numpy
+deepface
+tensorflow
+librosa
+faster-whisper
+soundfile

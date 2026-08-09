@@ -1,14 +1,18 @@
 import "./record.css";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { uploadVideo } from "./api";
 
 function Record() {
   const navigate = useNavigate();
   const videoRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const chunksRef = useRef([]);
 
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [stream, setStream] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const startCamera = async () => {
     try {
@@ -19,45 +23,104 @@ function Record() {
 
       videoRef.current.srcObject = mediaStream;
       setStream(mediaStream);
+      return mediaStream;
     } catch (error) {
       alert("Camera and microphone permission is required.");
       console.error(error);
+      return null;
     }
   };
 
   const startRecording = async () => {
-    if (!stream) {
-      await startCamera();
+    let activeStream = stream;
+
+    if (!activeStream) {
+      activeStream = await startCamera();
     }
+
+    if (!activeStream) {
+      // camera permission fail ho gayi
+      return;
+    }
+
+    chunksRef.current = [];
+
+    const recorder = new MediaRecorder(activeStream, {
+      mimeType: "video/webm",
+    });
+
+    recorder.ondataavailable = (e) => {
+      if (e.data.size > 0) {
+        chunksRef.current.push(e.data);
+      }
+    };
+
+    recorder.start();
+    mediaRecorderRef.current = recorder;
 
     setIsRecording(true);
     setIsPaused(false);
   };
 
   const pauseRecording = () => {
+    mediaRecorderRef.current?.pause();
     setIsPaused(true);
   };
 
   const resumeRecording = () => {
+    mediaRecorderRef.current?.resume();
     setIsPaused(false);
   };
 
-  const endRecording = () => {
+  const endRecording = async () => {
+    const recorder = mediaRecorderRef.current;
 
-  setIsRecording(false);
-  setIsPaused(false);
+    if (!recorder) {
+      navigate("/dashboard");
+      return;
+    }
 
-  if (stream) {
-    stream.getTracks().forEach((track) => track.stop());
-    setStream(null);
-  }
+    // Recorder ke stop hone ka wait karo taaki last chunk bhi mil jaye
+    const stopped = new Promise((resolve) => {
+      recorder.onstop = resolve;
+    });
 
-  if (videoRef.current) {
-    videoRef.current.srcObject = null;
-  }
+    recorder.stop();
+    await stopped;
 
-  navigate("/analysis");
-};
+    setIsRecording(false);
+    setIsPaused(false);
+
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+      setStream(null);
+    }
+
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+
+    const videoBlob = new Blob(chunksRef.current, { type: "video/webm" });
+    const token = localStorage.getItem("vibecheckToken");
+
+    if (!token) {
+      alert("Please login again.");
+      navigate("/");
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      const result = await uploadVideo(videoBlob, token);
+      // Analysis page ko real data ke sath bhejo
+      navigate("/analysis", { state: result });
+    } catch (err) {
+      alert("Upload failed: " + err.message);
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   return (
     <div className="record-page">
@@ -76,12 +139,13 @@ function Record() {
 
       </header>
 
-<button
-  className="back-button"
-  onClick={() => navigate("/dashboard")}
->
-  ← Back to Dashboard
-</button>
+      <button
+        className="back-button"
+        onClick={() => navigate("/dashboard")}
+      >
+        ← Back to Dashboard
+      </button>
+
       {/* CAMERA SECTION */}
       <main className="record-main">
 
@@ -144,6 +208,7 @@ function Record() {
               <button
                 className="start-record-btn"
                 onClick={startRecording}
+                disabled={isUploading}
               >
                 <span className="record-circle"></span>
                 START RECORDING
@@ -172,8 +237,9 @@ function Record() {
                 <button
                   className="end-btn"
                   onClick={endRecording}
+                  disabled={isUploading}
                 >
-                  ■ END
+                  {isUploading ? "UPLOADING..." : "■ END"}
                 </button>
 
               </div>
@@ -201,7 +267,9 @@ function Record() {
           <div className="info-item">
             <span>STATUS</span>
             <strong>
-              {isRecording
+              {isUploading
+                ? "Uploading & Analyzing"
+                : isRecording
                 ? isPaused
                   ? "Paused"
                   : "Recording"
