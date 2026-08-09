@@ -184,7 +184,7 @@ while True:
             result = DeepFace.analyze(
                 img_path=frame,
                 actions=["emotion"],
-                detector_backend="skip",
+                detector_backend="opencv",
                 enforce_detection=False,
                 silent=True
             )
