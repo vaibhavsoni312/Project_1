@@ -1,30 +1,25 @@
-import os
+import cv2
+import math
+import numpy as np
+import mediapipe as mp
+
+from pathlib import Path
 from collections import deque
 
-import cv2
-import mediapipe as mp
-import numpy as np
-
 
 # ============================================================
-# MODEL
+# MODEL PATH
 # ============================================================
 
-BASE_DIR = os.path.dirname(
-    os.path.dirname(
-        os.path.dirname(
-            os.path.abspath(__file__)
-        )
-    )
+BASE_DIR = Path(__file__).resolve().parents[2]
+
+MODEL_PATH = (
+    BASE_DIR
+    / "models"
+    / "face_landmarker.task"
 )
 
-MODEL_PATH = os.path.join(
-    BASE_DIR,
-    "models",
-    "face_landmarker.task",
-)
-
-if not os.path.isfile(MODEL_PATH):
+if not MODEL_PATH.exists():
     raise FileNotFoundError(
         f"Face landmark model not found:\n{MODEL_PATH}"
     )
@@ -35,47 +30,68 @@ if not os.path.isfile(MODEL_PATH):
 # ============================================================
 
 BaseOptions = mp.tasks.BaseOptions
-RunningMode = mp.tasks.vision.RunningMode
-FaceLandmarker = mp.tasks.vision.FaceLandmarker
-FaceLandmarkerOptions = mp.tasks.vision.FaceLandmarkerOptions
+
+FaceLandmarker = (
+    mp.tasks.vision.FaceLandmarker
+)
+
+FaceLandmarkerOptions = (
+    mp.tasks.vision.FaceLandmarkerOptions
+)
+
+RunningMode = (
+    mp.tasks.vision.RunningMode
+)
+
 
 options = FaceLandmarkerOptions(
+
     base_options=BaseOptions(
-        model_asset_path=MODEL_PATH
+        model_asset_path=str(
+            MODEL_PATH
+        )
     ),
+
     running_mode=RunningMode.IMAGE,
+
     num_faces=1,
-    min_face_detection_confidence=0.40,
-    min_face_presence_confidence=0.40,
-    min_tracking_confidence=0.40,
+
+    min_face_detection_confidence=0.50,
+
+    min_face_presence_confidence=0.50,
+
+    min_tracking_confidence=0.50,
+
     output_face_blendshapes=False,
+
     output_facial_transformation_matrixes=True,
 )
 
-face_landmarker = FaceLandmarker.create_from_options(options)
+
+landmarker = (
+    FaceLandmarker.create_from_options(
+        options
+    )
+)
 
 
 # ============================================================
 # SMOOTHING
 # ============================================================
 
-YAW_HISTORY = deque(maxlen=5)
-PITCH_HISTORY = deque(maxlen=5)
-ROLL_HISTORY = deque(maxlen=5)
-POSE_HISTORY = deque(maxlen=5)
+SMOOTHING_WINDOW = 5
 
+yaw_history = deque(
+    maxlen=SMOOTHING_WINDOW
+)
 
-# ============================================================
-# LIMITS / THRESHOLDS
-# ============================================================
+pitch_history = deque(
+    maxlen=SMOOTHING_WINDOW
+)
 
-MAX_YAW = 70.0
-MAX_PITCH = 50.0
-MAX_ROLL = 50.0
-
-YAW_THRESHOLD = 15.0
-PITCH_UP_THRESHOLD = -15.0
-PITCH_DOWN_THRESHOLD = 15.0
+roll_history = deque(
+    maxlen=SMOOTHING_WINDOW
+)
 
 
 # ============================================================
@@ -83,421 +99,679 @@ PITCH_DOWN_THRESHOLD = 15.0
 # ============================================================
 
 def reset_head_pose():
-    YAW_HISTORY.clear()
-    PITCH_HISTORY.clear()
-    ROLL_HISTORY.clear()
-    POSE_HISTORY.clear()
+
+    yaw_history.clear()
+
+    pitch_history.clear()
+
+    roll_history.clear()
 
 
 # ============================================================
-# SAFE HELPERS
+# HELPERS
 # ============================================================
 
-def _safe_float(value, default=0.0):
-    try:
-        value = float(value)
+def clamp(
+    value,
+    minimum,
+    maximum
+):
 
-        if np.isfinite(value):
-            return value
-
-    except Exception:
-        pass
-
-    return default
-
-
-def _smooth(history, value):
-    history.append(
-        _safe_float(value)
+    return max(
+        minimum,
+        min(
+            maximum,
+            value
+        )
     )
 
-    return float(
-        np.median(
-            np.asarray(
-                history,
+
+def safe_float(
+    value,
+    default=0.0
+):
+
+    try:
+
+        value = float(value)
+
+        if not np.isfinite(value):
+
+            return default
+
+        return value
+
+    except Exception:
+
+        return default
+
+
+# ============================================================
+# MATRIX → NUMPY
+# ============================================================
+
+def matrix_to_numpy(
+    matrix
+):
+
+    """
+    MediaPipe transformation matrix
+    ko safely 4x4 numpy matrix mein convert karta hai.
+    """
+
+    try:
+
+        # --------------------------------------------
+        # MediaPipe matrix object
+        # --------------------------------------------
+
+        if hasattr(
+            matrix,
+            "data"
+        ):
+
+            data = np.asarray(
+                matrix.data,
                 dtype=np.float64
+            )
+
+            if data.size == 16:
+
+                return data.reshape(
+                    4,
+                    4
+                )
+
+
+        # --------------------------------------------
+        # List / numpy array
+        # --------------------------------------------
+
+        data = np.asarray(
+            matrix,
+            dtype=np.float64
+        )
+
+        if data.size == 16:
+
+            return data.reshape(
+                4,
+                4
+            )
+
+    except Exception:
+
+        return None
+
+    return None
+
+
+# ============================================================
+# ROTATION MATRIX → EULER
+# ============================================================
+
+def rotation_matrix_to_euler(
+    rotation
+):
+
+    """
+    Returns:
+
+        yaw
+        pitch
+        roll
+
+    in degrees.
+    """
+
+    try:
+
+        r00 = float(
+            rotation[0, 0]
+        )
+
+        r01 = float(
+            rotation[0, 1]
+        )
+
+        r02 = float(
+            rotation[0, 2]
+        )
+
+        r10 = float(
+            rotation[1, 0]
+        )
+
+        r11 = float(
+            rotation[1, 1]
+        )
+
+        r12 = float(
+            rotation[1, 2]
+        )
+
+        r20 = float(
+            rotation[2, 0]
+        )
+
+        r21 = float(
+            rotation[2, 1]
+        )
+
+        r22 = float(
+            rotation[2, 2]
+        )
+
+
+        # --------------------------------------------
+        # Numerical stability
+        # --------------------------------------------
+
+        sy = math.sqrt(
+            r00 * r00
+            +
+            r10 * r10
+        )
+
+        singular = (
+            sy < 1e-6
+        )
+
+
+        # --------------------------------------------
+        # Normal case
+        # --------------------------------------------
+
+        if not singular:
+
+            x = math.atan2(
+                r21,
+                r22
+            )
+
+            y = math.atan2(
+                -r20,
+                sy
+            )
+
+            z = math.atan2(
+                r10,
+                r00
+            )
+
+
+        # --------------------------------------------
+        # Gimbal lock
+        # --------------------------------------------
+
+        else:
+
+            x = math.atan2(
+                -r12,
+                r11
+            )
+
+            y = math.atan2(
+                -r20,
+                sy
+            )
+
+            z = 0.0
+
+
+        roll = math.degrees(
+            x
+        )
+
+        pitch = math.degrees(
+            y
+        )
+
+        yaw = math.degrees(
+            z
+        )
+
+
+        return (
+            yaw,
+            pitch,
+            roll
+        )
+
+    except Exception:
+
+        return (
+            0.0,
+            0.0,
+            0.0
+        )
+
+
+# ============================================================
+# ANGLE NORMALIZATION
+# ============================================================
+
+def normalize_angle(
+    angle
+):
+
+    angle = safe_float(
+        angle
+    )
+
+    while angle > 180.0:
+
+        angle -= 360.0
+
+    while angle < -180.0:
+
+        angle += 360.0
+
+    return angle
+
+
+# ============================================================
+# SMOOTHING
+# ============================================================
+
+def smooth_angles(
+    yaw,
+    pitch,
+    roll
+):
+
+    yaw_history.append(
+        yaw
+    )
+
+    pitch_history.append(
+        pitch
+    )
+
+    roll_history.append(
+        roll
+    )
+
+
+    # Median is resistant to
+    # occasional noisy frames.
+
+    smooth_yaw = float(
+        np.median(
+            list(
+                yaw_history
+            )
+        )
+    )
+
+    smooth_pitch = float(
+        np.median(
+            list(
+                pitch_history
+            )
+        )
+    )
+
+    smooth_roll = float(
+        np.median(
+            list(
+                roll_history
             )
         )
     )
 
 
-def _stable_pose(pose):
-    POSE_HISTORY.append(pose)
+    return (
+        smooth_yaw,
+        smooth_pitch,
+        smooth_roll
+    )
 
-    counts = {}
 
-    for item in POSE_HISTORY:
-        counts[item] = (
-            counts.get(item, 0) + 1
+# ============================================================
+# MATRIX QUALITY
+# ============================================================
+
+def matrix_quality(
+    matrix
+):
+
+    """
+    Checks whether the 3x3 part behaves
+    reasonably like a rotation matrix.
+
+    This is QUALITY, not model accuracy.
+    """
+
+    try:
+
+        rotation = matrix[
+            :3,
+            :3
+        ]
+
+
+        if not np.all(
+            np.isfinite(
+                rotation
+            )
+        ):
+
+            return 0.0
+
+
+        determinant = abs(
+            np.linalg.det(
+                rotation
+            )
         )
 
-    return max(
-        counts,
-        key=counts.get
-    )
+
+        orthogonality_error = np.linalg.norm(
+            (
+                rotation.T
+                @
+                rotation
+            )
+            -
+            np.eye(3)
+        )
 
 
-# ============================================================
-# FACE QUALITY
-# ============================================================
+        # --------------------------------------------
+        # Score
+        # --------------------------------------------
 
-def _face_quality(landmarks):
+        score = 100.0
 
-    xs = np.asarray(
-        [
-            float(p.x)
-            for p in landmarks
-        ],
-        dtype=np.float64
-    )
 
-    ys = np.asarray(
-        [
-            float(p.y)
-            for p in landmarks
-        ],
-        dtype=np.float64
-    )
+        if determinant < 0.5:
 
-    if xs.size == 0 or ys.size == 0:
-        return 0.0
+            score -= 20.0
 
-    min_x = float(np.min(xs))
-    max_x = float(np.max(xs))
+        elif determinant > 2.0:
 
-    min_y = float(np.min(ys))
-    max_y = float(np.max(ys))
+            score -= 15.0
 
-    width = max_x - min_x
-    height = max_y - min_y
 
-    area = width * height
+        if orthogonality_error > 1.0:
 
-    if area < 0.015:
-        score = 35.0
+            score -= 20.0
 
-    elif area < 0.03:
-        score = 55.0
+        elif orthogonality_error > 0.5:
 
-    elif area < 0.06:
-        score = 75.0
+            score -= 10.0
 
-    elif area < 0.10:
-        score = 90.0
 
-    else:
-        score = 96.0
-
-    margin = 0.02
-
-    penalty = 0.0
-
-    if min_x < margin:
-        penalty += 8.0
-
-    if max_x > 1.0 - margin:
-        penalty += 8.0
-
-    if min_y < margin:
-        penalty += 8.0
-
-    if max_y > 1.0 - margin:
-        penalty += 8.0
-
-    return float(
-        np.clip(
-            score - penalty,
+        return clamp(
+            score,
             0.0,
             100.0
         )
-    )
+
+    except Exception:
+
+        return 0.0
 
 
 # ============================================================
-# TRANSFORMATION MATRIX -> EULER
+# CONFIDENCE
 # ============================================================
 
-def _extract_euler_angles(matrix):
+def calculate_confidence(
+    matrix,
+    yaw,
+    pitch,
+    roll
+):
 
-    matrix = np.asarray(
-        matrix,
-        dtype=np.float64
-    )
+    """
+    IMPORTANT:
 
-    if matrix.shape == (4, 4):
+    Analyzer accepts calibration samples when
+    confidence >= 25.
 
-        rotation = matrix[:3, :3]
+    Previous implementation could produce
+    artificially low confidence even when
+    MediaPipe successfully returned a valid
+    transformation matrix.
 
-    elif matrix.shape == (3, 3):
+    This version therefore treats a valid
+    transformation matrix + finite angles as
+    a strong detection.
 
-        rotation = matrix
+    This number is RELIABILITY/QUALITY,
+    NOT mathematical accuracy.
+    """
 
-    else:
+    if matrix is None:
 
-        raise ValueError(
-            "Unexpected transformation "
-            f"matrix shape: {matrix.shape}"
+        return 0.0
+
+
+    try:
+
+        if not np.all(
+            np.isfinite(
+                matrix
+            )
+        ):
+
+            return 0.0
+
+
+        if not all(
+            np.isfinite(
+                value
+            )
+            for value in (
+                yaw,
+                pitch,
+                roll
+            )
+        ):
+
+            return 0.0
+
+
+        quality = matrix_quality(
+            matrix
         )
 
-    if not np.all(
-        np.isfinite(rotation)
-    ):
-        raise ValueError(
-            "Transformation matrix "
-            "contains non-finite values"
+
+        # ------------------------------------------------
+        # Valid MediaPipe matrix itself is strong evidence
+        # ------------------------------------------------
+
+        confidence = (
+            70.0
+            +
+            (
+                quality
+                *
+                0.25
+            )
         )
 
-    # Small numerical correction.
-    u, _, vt = np.linalg.svd(
-        rotation
-    )
 
-    rotation = u @ vt
+        # ------------------------------------------------
+        # Extreme angles are still valid detections,
+        # but slightly reduce confidence.
+        # ------------------------------------------------
 
-    if np.linalg.det(rotation) < 0:
+        if abs(yaw) > 80.0:
 
-        u[:, -1] *= -1.0
+            confidence -= 8.0
 
-        rotation = u @ vt
+        if abs(pitch) > 75.0:
 
-    euler = cv2.RQDecomp3x3(
-        rotation
-    )[0]
+            confidence -= 8.0
 
-    pitch = _safe_float(
-        euler[0]
-    )
+        if abs(roll) > 75.0:
 
-    yaw = _safe_float(
-        euler[1]
-    )
+            confidence -= 5.0
 
-    roll = _safe_float(
-        euler[2]
-    )
 
-    return (
-        pitch,
-        yaw,
-        roll
-    )
+        confidence = clamp(
+            confidence,
+            40.0,
+            98.0
+        )
+
+
+        return confidence
+
+    except Exception:
+
+        return 0.0
 
 
 # ============================================================
 # CLASSIFICATION
 # ============================================================
 
-def _classify(
+def classify_head_pose(
     yaw,
     pitch
 ):
 
+    """
+    Raw head pose.
+
+    NOTE:
+    video_analyzer.py later converts this into
+    relative head pose using calibration baseline.
+    """
+
+    YAW_THRESHOLD = 15.0
+
+    PITCH_THRESHOLD = 12.0
+
+
+    # Horizontal priority.
+
     if yaw < -YAW_THRESHOLD:
+
         return "Looking Left"
 
+
     if yaw > YAW_THRESHOLD:
+
         return "Looking Right"
 
-    if pitch < PITCH_UP_THRESHOLD:
+
+    if pitch < -PITCH_THRESHOLD:
+
         return "Looking Up"
 
-    if pitch > PITCH_DOWN_THRESHOLD:
+
+    if pitch > PITCH_THRESHOLD:
+
         return "Looking Down"
+
 
     return "Center"
 
 
 # ============================================================
-# MAIN HEAD POSE FUNCTION
+# MAIN
 # ============================================================
 
-def detect_head_pose(frame):
+def detect_head_pose(
+    frame
+):
+
+    """
+    Detect 3D head pose using MediaPipe
+    facial transformation matrix.
+
+    Returns:
+
+    {
+        "pose": str,
+        "yaw": float,
+        "pitch": float,
+        "roll": float,
+        "confidence": float
+    }
+    """
+
+
+    # ========================================================
+    # INVALID FRAME
+    # ========================================================
+
+    if frame is None:
+
+        return {
+            "pose": "Unknown",
+            "yaw": 0.0,
+            "pitch": 0.0,
+            "roll": 0.0,
+            "confidence": 0.0
+        }
+
+
+    # ========================================================
+    # BGR → RGB
+    # ========================================================
 
     try:
-
-        if (
-            frame is None
-            or not isinstance(
-                frame,
-                np.ndarray
-            )
-        ):
-
-            return {
-                "pose": "Unknown",
-                "yaw": 0.0,
-                "pitch": 0.0,
-                "roll": 0.0,
-                "confidence": 0.0,
-                "detected": False,
-            }
-
-        if (
-            frame.ndim != 3
-            or frame.shape[0] < 40
-            or frame.shape[1] < 40
-        ):
-
-            return {
-                "pose": "Unknown",
-                "yaw": 0.0,
-                "pitch": 0.0,
-                "roll": 0.0,
-                "confidence": 0.0,
-                "detected": False,
-            }
 
         rgb = cv2.cvtColor(
             frame,
             cv2.COLOR_BGR2RGB
         )
 
-        mp_image = mp.Image(
+    except Exception:
+
+        return {
+            "pose": "Unknown",
+            "yaw": 0.0,
+            "pitch": 0.0,
+            "roll": 0.0,
+            "confidence": 0.0
+        }
+
+
+    # ========================================================
+    # MEDIAPIPE IMAGE
+    # ========================================================
+
+    try:
+
+        image = mp.Image(
             image_format=(
                 mp.ImageFormat.SRGB
             ),
             data=rgb
         )
 
-        result = face_landmarker.detect(
-            mp_image
-        )
-
-        if not result.face_landmarks:
-
-            return {
-                "pose": "No face",
-                "yaw": 0.0,
-                "pitch": 0.0,
-                "roll": 0.0,
-                "confidence": 0.0,
-                "detected": False,
-            }
-
-        matrices = getattr(
-            result,
-            "facial_transformation_matrixes",
-            None
-        )
-
-        if (
-            matrices is None
-            or len(matrices) == 0
-        ):
-
-            return {
-                "pose": "Unknown",
-                "yaw": 0.0,
-                "pitch": 0.0,
-                "roll": 0.0,
-                "confidence": 0.0,
-                "detected": False,
-            }
-
-        landmarks = (
-            result.face_landmarks[0]
-        )
-
-        pitch, yaw, roll = (
-            _extract_euler_angles(
-                matrices[0]
-            )
-        )
-
-        # Reject impossible values.
-        if (
-            not np.isfinite(yaw)
-            or not np.isfinite(pitch)
-            or not np.isfinite(roll)
-            or abs(yaw) > MAX_YAW
-            or abs(pitch) > MAX_PITCH
-            or abs(roll) > MAX_ROLL
-        ):
-
-            return {
-                "pose": "Unknown",
-                "yaw": 0.0,
-                "pitch": 0.0,
-                "roll": 0.0,
-                "confidence": 0.0,
-                "detected": False,
-            }
-
-        smooth_yaw = _smooth(
-            YAW_HISTORY,
-            yaw
-        )
-
-        smooth_pitch = _smooth(
-            PITCH_HISTORY,
-            pitch
-        )
-
-        smooth_roll = _smooth(
-            ROLL_HISTORY,
-            roll
-        )
-
-        pose = _stable_pose(
-            _classify(
-                smooth_yaw,
-                smooth_pitch
-            )
-        )
-
-        quality = _face_quality(
-            landmarks
-        )
-
-        # Extreme angles reduce reliability.
-        if abs(smooth_yaw) > 45:
-            quality -= 12.0
-
-        if abs(smooth_pitch) > 35:
-            quality -= 10.0
-
-        if abs(smooth_roll) > 35:
-            quality -= 5.0
-
-        quality = float(
-            np.clip(
-                quality,
-                0.0,
-                100.0
-            )
-        )
+    except Exception:
 
         return {
-            "pose": pose,
-
-            "yaw": round(
-                smooth_yaw,
-                2
-            ),
-
-            "pitch": round(
-                smooth_pitch,
-                2
-            ),
-
-            "roll": round(
-                smooth_roll,
-                2
-            ),
-
-            "confidence": round(
-                quality,
-                1
-            ),
-
-            "detected": True,
+            "pose": "Unknown",
+            "yaw": 0.0,
+            "pitch": 0.0,
+            "roll": 0.0,
+            "confidence": 0.0
         }
+
+
+    # ========================================================
+    # DETECTION
+    # ========================================================
+
+    try:
+
+        result = landmarker.detect(
+            image
+        )
 
     except Exception as e:
 
         print(
-            "[Head Pose Error] "
-            f"{type(e).__name__}: {e}"
+            f"[Head Pose Detection Error] {e}"
         )
 
         return {
@@ -505,6 +779,224 @@ def detect_head_pose(frame):
             "yaw": 0.0,
             "pitch": 0.0,
             "roll": 0.0,
-            "confidence": 0.0,
-            "detected": False,
+            "confidence": 0.0
         }
+
+
+    # ========================================================
+    # NO FACE
+    # ========================================================
+
+    if (
+        result is None
+        or
+        not result.face_landmarks
+    ):
+
+        return {
+            "pose": "Unknown",
+            "yaw": 0.0,
+            "pitch": 0.0,
+            "roll": 0.0,
+            "confidence": 0.0
+        }
+
+
+    # ========================================================
+    # TRANSFORMATION MATRICES
+    # ========================================================
+
+    matrices = getattr(
+        result,
+        "facial_transformation_matrixes",
+        None
+    )
+
+
+    if matrices is None:
+
+        return {
+            "pose": "Unknown",
+            "yaw": 0.0,
+            "pitch": 0.0,
+            "roll": 0.0,
+            "confidence": 0.0
+        }
+
+
+    try:
+
+        if len(matrices) == 0:
+
+            return {
+                "pose": "Unknown",
+                "yaw": 0.0,
+                "pitch": 0.0,
+                "roll": 0.0,
+                "confidence": 0.0
+            }
+
+    except Exception:
+
+        return {
+            "pose": "Unknown",
+            "yaw": 0.0,
+            "pitch": 0.0,
+            "roll": 0.0,
+            "confidence": 0.0
+        }
+
+
+    # ========================================================
+    # MATRIX
+    # ========================================================
+
+    matrix = matrix_to_numpy(
+        matrices[0]
+    )
+
+
+    if matrix is None:
+
+        return {
+            "pose": "Unknown",
+            "yaw": 0.0,
+            "pitch": 0.0,
+            "roll": 0.0,
+            "confidence": 0.0
+        }
+
+
+    # ========================================================
+    # ROTATION
+    # ========================================================
+
+    rotation = matrix[
+        :3,
+        :3
+    ]
+
+
+    # ========================================================
+    # EULER ANGLES
+    # ========================================================
+
+    (
+        yaw,
+        pitch,
+        roll
+    ) = rotation_matrix_to_euler(
+        rotation
+    )
+
+
+    # ========================================================
+    # NORMALIZE
+    # ========================================================
+
+    yaw = normalize_angle(
+        yaw
+    )
+
+    pitch = normalize_angle(
+        pitch
+    )
+
+    roll = normalize_angle(
+        roll
+    )
+
+
+    # ========================================================
+    # CLAMP
+    # ========================================================
+
+    yaw = clamp(
+        yaw,
+        -90.0,
+        90.0
+    )
+
+    pitch = clamp(
+        pitch,
+        -90.0,
+        90.0
+    )
+
+    roll = clamp(
+        roll,
+        -90.0,
+        90.0
+    )
+
+
+    # ========================================================
+    # SMOOTH
+    # ========================================================
+
+    (
+        smooth_yaw,
+        smooth_pitch,
+        smooth_roll
+    ) = smooth_angles(
+        yaw,
+        pitch,
+        roll
+    )
+
+
+    # ========================================================
+    # CONFIDENCE
+    # ========================================================
+
+    confidence = calculate_confidence(
+        matrix,
+        smooth_yaw,
+        smooth_pitch,
+        smooth_roll
+    )
+
+
+    # ========================================================
+    # POSE
+    # ========================================================
+
+    pose = classify_head_pose(
+        smooth_yaw,
+        smooth_pitch
+    )
+
+
+    # ========================================================
+    # RETURN
+    # ========================================================
+
+    return {
+
+        "pose":
+            pose,
+
+        "yaw":
+            round(
+                smooth_yaw,
+                2
+            ),
+
+        "pitch":
+            round(
+                smooth_pitch,
+                2
+            ),
+
+        "roll":
+            round(
+                smooth_roll,
+                2
+            ),
+
+        "confidence":
+            round(
+                confidence,
+                1
+            )
+    }

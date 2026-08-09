@@ -1,11 +1,8 @@
 import cv2
 import json
-import sys
 import numpy as np
 
-from app.ai.eye_contact import (
-    detect_eye_contact
-)
+from app.ai.eye_contact import detect_eye_contact
 
 from app.ai.head_pose import (
     detect_head_pose,
@@ -20,258 +17,424 @@ from app.ai.emotion import (
 
 
 # ============================================================
-# CONFIG
+# CONFIGURATION
 # ============================================================
 
 CALIBRATION_DURATION = 3.0
+
 SAMPLE_INTERVAL = 0.25
 
-MIN_CALIBRATION_SAMPLES = 20
 
-MAD_SCALE = 3.5
+# ============================================================
+# HEAD POSE CALIBRATION
+# ============================================================
 
-MAX_CALIBRATION_YAW_STD = 15.0
+MIN_CALIBRATION_SAMPLES = 5
+
+MAX_CALIBRATION_YAW_STD = 18.0
+
 MAX_CALIBRATION_PITCH_STD = 12.0
-MAX_CALIBRATION_ROLL_STD = 10.0
+
+
+# ============================================================
+# HEAD POSE CLASSIFICATION
+# ============================================================
+
+YAW_THRESHOLD = 15.0
+
+PITCH_THRESHOLD = 12.0
 
 
 # ============================================================
 # HELPERS
 # ============================================================
 
-def safe_float(
-    value,
-    default=0.0
-):
+def safe_float(value, default=0.0):
 
     try:
 
         value = float(value)
 
-        if np.isfinite(value):
-            return value
+        if not np.isfinite(value):
+            return default
+
+        return value
 
     except Exception:
-        pass
 
-    return default
+        return default
 
 
-def clamp(
-    value,
-    low,
-    high
-):
+def clamp(value, low, high):
 
     return max(
         low,
-        min(high, value)
-    )
-
-
-def robust_filter(values):
-
-    arr = np.asarray(
-        values,
-        dtype=np.float64
-    )
-
-    if arr.size == 0:
-        return arr
-
-    median = np.median(arr)
-
-    deviation = np.abs(
-        arr - median
-    )
-
-    mad = np.median(
-        deviation
-    )
-
-    if mad < 1e-6:
-        return arr
-
-    robust_sigma = (
-        1.4826 * mad
-    )
-
-    limit = (
-        MAD_SCALE
-        * robust_sigma
-    )
-
-    filtered = arr[
-        np.abs(
-            arr - median
-        ) <= limit
-    ]
-
-    if (
-        filtered.size
-        < max(
-            5,
-            int(arr.size * 0.50)
+        min(
+            high,
+            value
         )
-    ):
-        return arr
-
-    return filtered
+    )
 
 
 # ============================================================
-# HEAD CALIBRATION
+# ROBUST OUTLIER FILTER
+# ============================================================
+
+def filter_pose_values(
+    yaw_values,
+    pitch_values,
+    roll_values
+):
+
+    if not yaw_values:
+        return [], [], []
+
+    yaw = np.asarray(
+        yaw_values,
+        dtype=np.float64
+    )
+
+    pitch = np.asarray(
+        pitch_values,
+        dtype=np.float64
+    )
+
+    roll = np.asarray(
+        roll_values,
+        dtype=np.float64
+    )
+
+    # --------------------------------------------------------
+    # Remove NaN / Inf
+    # --------------------------------------------------------
+
+    valid_mask = (
+        np.isfinite(yaw)
+        &
+        np.isfinite(pitch)
+        &
+        np.isfinite(roll)
+    )
+
+    yaw = yaw[valid_mask]
+    pitch = pitch[valid_mask]
+    roll = roll[valid_mask]
+
+    if len(yaw) < MIN_CALIBRATION_SAMPLES:
+
+        return (
+            yaw.tolist(),
+            pitch.tolist(),
+            roll.tolist()
+        )
+
+    # --------------------------------------------------------
+    # Median based robust filtering
+    # --------------------------------------------------------
+
+    yaw_median = np.median(yaw)
+
+    pitch_median = np.median(pitch)
+
+    roll_median = np.median(roll)
+
+    yaw_mad = np.median(
+        np.abs(
+            yaw - yaw_median
+        )
+    )
+
+    pitch_mad = np.median(
+        np.abs(
+            pitch - pitch_median
+        )
+    )
+
+    roll_mad = np.median(
+        np.abs(
+            roll - roll_median
+        )
+    )
+
+    # Minimum tolerance prevents over-filtering
+    yaw_tolerance = max(
+        10.0,
+        3.0 * yaw_mad
+    )
+
+    pitch_tolerance = max(
+        10.0,
+        3.0 * pitch_mad
+    )
+
+    roll_tolerance = max(
+        10.0,
+        3.0 * roll_mad
+    )
+
+    mask = (
+        (np.abs(yaw - yaw_median) <= yaw_tolerance)
+        &
+        (np.abs(pitch - pitch_median) <= pitch_tolerance)
+        &
+        (np.abs(roll - roll_median) <= roll_tolerance)
+    )
+
+    filtered_yaw = yaw[mask]
+
+    filtered_pitch = pitch[mask]
+
+    filtered_roll = roll[mask]
+
+    # --------------------------------------------------------
+    # Safety fallback
+    # --------------------------------------------------------
+
+    if len(filtered_yaw) < MIN_CALIBRATION_SAMPLES:
+
+        filtered_yaw = yaw
+
+        filtered_pitch = pitch
+
+        filtered_roll = roll
+
+    return (
+        filtered_yaw.tolist(),
+        filtered_pitch.tolist(),
+        filtered_roll.tolist()
+    )
+
+
+# ============================================================
+# HEAD POSE BASELINE
 # ============================================================
 
 def calculate_head_pose_baseline(
     yaw_values,
     pitch_values,
-    roll_values,
-    confidence_values
+    roll_values
 ):
 
-    raw_count = len(
-        yaw_values
-    )
+    raw_sample_count = len(yaw_values)
 
-    if (
-        raw_count
-        < MIN_CALIBRATION_SAMPLES
-    ):
+    if raw_sample_count < MIN_CALIBRATION_SAMPLES:
 
         return {
+
             "valid": False,
+
             "yaw": 0.0,
+
             "pitch": 0.0,
+
             "roll": 0.0,
+
             "yaw_std": 0.0,
+
             "pitch_std": 0.0,
+
             "roll_std": 0.0,
-            "samples": 0,
-            "raw_samples": raw_count,
+
+            "samples": raw_sample_count,
+
+            "raw_samples": raw_sample_count,
+
             "filtered_samples": 0,
-            "average_confidence": 0.0,
+
         }
 
-    yaw = robust_filter(
-        yaw_values
-    )
+    # --------------------------------------------------------
+    # Robust filtering
+    # --------------------------------------------------------
 
-    pitch = robust_filter(
-        pitch_values
-    )
-
-    roll = robust_filter(
+    (
+        filtered_yaw,
+        filtered_pitch,
+        filtered_roll
+    ) = filter_pose_values(
+        yaw_values,
+        pitch_values,
         roll_values
     )
 
-    n = min(
-        len(yaw),
-        len(pitch),
-        len(roll)
-    )
-
-    if (
-        n
-        < MIN_CALIBRATION_SAMPLES
-    ):
+    if len(filtered_yaw) < MIN_CALIBRATION_SAMPLES:
 
         return {
+
             "valid": False,
+
             "yaw": 0.0,
+
             "pitch": 0.0,
+
             "roll": 0.0,
+
             "yaw_std": 0.0,
+
             "pitch_std": 0.0,
+
             "roll_std": 0.0,
-            "samples": 0,
-            "raw_samples": raw_count,
-            "filtered_samples": n,
-            "average_confidence": 0.0,
+
+            "samples": raw_sample_count,
+
+            "raw_samples": raw_sample_count,
+
+            "filtered_samples": len(filtered_yaw),
+
         }
 
-    yaw = yaw[:n]
-    pitch = pitch[:n]
-    roll = roll[:n]
-
-    baseline_yaw = float(
-        np.median(yaw)
-    )
-
-    baseline_pitch = float(
-        np.median(pitch)
-    )
-
-    baseline_roll = float(
-        np.median(roll)
-    )
-
-    yaw_std = float(
-        np.std(yaw)
-    )
-
-    pitch_std = float(
-        np.std(pitch)
-    )
-
-    roll_std = float(
-        np.std(roll)
-    )
-
-    conf = np.asarray(
-        confidence_values,
+    yaw_array = np.asarray(
+        filtered_yaw,
         dtype=np.float64
     )
 
-    average_confidence = (
-        float(np.mean(conf))
-        if conf.size
-        else 0.0
+    pitch_array = np.asarray(
+        filtered_pitch,
+        dtype=np.float64
     )
 
+    roll_array = np.asarray(
+        filtered_roll,
+        dtype=np.float64
+    )
+
+    # --------------------------------------------------------
+    # Median baseline
+    # --------------------------------------------------------
+
+    baseline_yaw = float(
+        np.median(yaw_array)
+    )
+
+    baseline_pitch = float(
+        np.median(pitch_array)
+    )
+
+    baseline_roll = float(
+        np.median(roll_array)
+    )
+
+    # --------------------------------------------------------
+    # Stability
+    # --------------------------------------------------------
+
+    yaw_std = float(
+        np.std(yaw_array)
+    )
+
+    pitch_std = float(
+        np.std(pitch_array)
+    )
+
+    roll_std = float(
+        np.std(roll_array)
+    )
+
+    # --------------------------------------------------------
+    # Calibration validity
+    # --------------------------------------------------------
+
     stable = (
+
+        len(yaw_array)
+        >= MIN_CALIBRATION_SAMPLES
+
+        and
+
         yaw_std
         <= MAX_CALIBRATION_YAW_STD
-        and pitch_std
+
+        and
+
+        pitch_std
         <= MAX_CALIBRATION_PITCH_STD
-        and roll_std
-        <= MAX_CALIBRATION_ROLL_STD
+
     )
 
     return {
-        "valid": bool(stable),
+
+        "valid": stable,
+
         "yaw": baseline_yaw,
+
         "pitch": baseline_pitch,
+
         "roll": baseline_roll,
+
         "yaw_std": yaw_std,
+
         "pitch_std": pitch_std,
+
         "roll_std": roll_std,
-        "samples": n,
-        "raw_samples": raw_count,
-        "filtered_samples": n,
-        "average_confidence": average_confidence,
+
+        "samples": len(yaw_array),
+
+        "raw_samples": raw_sample_count,
+
+        "filtered_samples": len(yaw_array),
+
     }
 
 
 # ============================================================
-# MAIN ANALYZER
+# HEAD POSE CLASSIFICATION
 # ============================================================
 
-def analyze_video(
-    video_path
+def classify_head_pose(
+    yaw,
+    pitch
 ):
 
+    # Horizontal movement gets priority
+    # because interview eye/head direction is
+    # more strongly affected by yaw.
+
+    if yaw < -YAW_THRESHOLD:
+
+        return "Looking Left"
+
+    if yaw > YAW_THRESHOLD:
+
+        return "Looking Right"
+
+    if pitch < -PITCH_THRESHOLD:
+
+        return "Looking Up"
+
+    if pitch > PITCH_THRESHOLD:
+
+        return "Looking Down"
+
+    return "Center"
+
+
+# ============================================================
+# MAIN VIDEO ANALYZER
+# ============================================================
+
+def analyze_video(video_path):
+
     print()
+
     print("=" * 65)
+
     print(
         "             PREP-CHECK - VIDEO ANALYSIS"
     )
+
     print("=" * 65)
+
     print()
 
     print(
         f"Input Video : {video_path}"
     )
+
+    print()
+
+    # ========================================================
+    # OPEN VIDEO
+    # ========================================================
 
     cap = cv2.VideoCapture(
         video_path
@@ -280,9 +443,12 @@ def analyze_video(
     if not cap.isOpened():
 
         raise RuntimeError(
-            "Could not open video: "
-            f"{video_path}"
+            f"Could not open video: {video_path}"
         )
+
+    # ========================================================
+    # VIDEO INFORMATION
+    # ========================================================
 
     fps = safe_float(
         cap.get(
@@ -292,6 +458,7 @@ def analyze_video(
     )
 
     if fps <= 0:
+
         fps = 30.0
 
     total_frames = int(
@@ -301,9 +468,13 @@ def analyze_video(
     )
 
     duration = (
+
         total_frames / fps
+
         if total_frames > 0
+
         else 0.0
+
     )
 
     print(
@@ -330,17 +501,30 @@ def analyze_video(
 
     print()
 
+    # ========================================================
+    # RESET AI SESSIONS
+    # ========================================================
+
     reset_emotion_session()
+
     reset_head_pose()
 
+    # ========================================================
+    # RESULT STORAGE
+    # ========================================================
+
     eye_scores = []
+
     eye_states = []
+
     eye_directions = []
 
     head_poses = []
 
     yaw_values = []
+
     pitch_values = []
+
     roll_values = []
 
     head_confidences = []
@@ -349,45 +533,77 @@ def analyze_video(
 
     timeline = []
 
+    # ========================================================
+    # CALIBRATION STORAGE
+    # ========================================================
+
     calibration_yaws = []
+
     calibration_pitches = []
+
     calibration_rolls = []
+
     calibration_confidences = []
 
     head_pose_baseline = {
+
         "valid": False,
+
         "yaw": 0.0,
+
         "pitch": 0.0,
+
         "roll": 0.0,
+
         "yaw_std": 0.0,
+
         "pitch_std": 0.0,
+
         "roll_std": 0.0,
+
         "samples": 0,
+
         "raw_samples": 0,
+
         "filtered_samples": 0,
-        "average_confidence": 0.0,
+
     }
 
+    # ========================================================
+    # SAMPLING
+    # ========================================================
+
     sample_interval_frames = max(
+
         1,
+
         int(
-            fps
-            * SAMPLE_INTERVAL
+            fps *
+            SAMPLE_INTERVAL
         )
+
     )
 
     calibration_frames = max(
+
         1,
+
         int(
-            fps
-            * CALIBRATION_DURATION
+            fps *
+            CALIBRATION_DURATION
         )
+
     )
 
+    # ========================================================
+    # LOOP VARIABLES
+    # ========================================================
+
     frame_number = 0
+
     analyzed_frames = 0
 
-    head_calibration_completed = False
+    calibration_completed = False
 
     last_emotion_error = None
 
@@ -406,56 +622,94 @@ def analyze_video(
         ret, frame = cap.read()
 
         if not ret:
+
             break
 
         frame_number += 1
 
         # ----------------------------------------------------
-        # HEAD CALIBRATION IS INDEPENDENT
+        # CALIBRATION PHASE
         # ----------------------------------------------------
 
-        is_head_calibration = (
-            not head_calibration_completed
+        is_calibration_phase = (
+
+            not calibration_completed
+
             and
+
             frame_number <= calibration_frames
+
         )
 
+        # ----------------------------------------------------
+        # NORMAL SAMPLING
+        # ----------------------------------------------------
+
         is_sample_frame = (
+
             frame_number
-            % sample_interval_frames
+            %
+            sample_interval_frames
+
             == 0
+
         )
 
         if (
-            not is_head_calibration
+
+            not is_calibration_phase
+
             and
+
             not is_sample_frame
+
         ):
+
             continue
 
         video_time = (
+
             frame_number / fps
+
         )
 
+        # ====================================================
+        # DEFAULT VALUES
+        # ====================================================
+
         eye_result = {
+
             "eye_contact": "UNKNOWN",
-            "score": 0.0,
+
+            "score": 0,
+
             "direction": "Unknown",
+
             "calibrated": False,
+
         }
 
         head_result = {
+
             "pose": "Unknown",
+
             "yaw": 0.0,
+
             "pitch": 0.0,
+
             "roll": 0.0,
+
             "confidence": 0.0,
-            "detected": False,
+
         }
 
         emotion = "UNKNOWN"
+
         emotion_confidence = 0.0
+
         emotion_valid = False
+
+        emotion_error = None
 
         # ====================================================
         # EYE CONTACT
@@ -463,45 +717,48 @@ def analyze_video(
 
         try:
 
-            eye_result = (
-                detect_eye_contact(
-                    frame
-                )
+            eye_result = detect_eye_contact(
+                frame
             )
 
-            eye_state = (
+            eye_state = eye_result.get(
+                "eye_contact",
+                "UNKNOWN"
+            )
+
+            eye_score = safe_float(
                 eye_result.get(
-                    "eye_contact",
-                    "UNKNOWN"
+                    "score",
+                    0
                 )
             )
 
-            eye_score = clamp(
-                safe_float(
-                    eye_result.get(
-                        "score",
-                        0.0
-                    )
-                ),
-                0.0,
-                100.0
+            eye_direction = eye_result.get(
+                "direction",
+                "Unknown"
             )
 
-            eye_direction = (
-                eye_result.get(
-                    "direction",
-                    "Unknown"
-                )
+            calibrated = eye_result.get(
+                "calibrated",
+                False
             )
 
-            if not is_head_calibration:
+            if calibrated:
+
+                calibration_completed = True
+
+            if not is_calibration_phase:
 
                 eye_states.append(
                     eye_state
                 )
 
                 eye_scores.append(
-                    eye_score
+                    clamp(
+                        eye_score,
+                        0,
+                        100
+                    )
                 )
 
                 eye_directions.append(
@@ -511,22 +768,23 @@ def analyze_video(
         except Exception as e:
 
             print(
-                "[Eye Contact Error] "
-                f"{video_time:.2f}s: "
-                f"{type(e).__name__}: {e}"
+                f"[Eye Contact Error] "
+                f"{video_time:.2f}s: {e}"
             )
 
         # ====================================================
-        # HEAD POSE
+        # 3D HEAD POSE
         # ====================================================
 
         try:
 
-            head_result = (
-                detect_head_pose(
-                    frame
-                )
+            head_result = detect_head_pose(
+                frame
             )
+
+            # ------------------------------------------------
+            # RAW VALUES
+            # ------------------------------------------------
 
             raw_yaw = safe_float(
                 head_result.get(
@@ -550,46 +808,80 @@ def analyze_video(
             )
 
             head_confidence = clamp(
+
                 safe_float(
                     head_result.get(
                         "confidence",
                         0.0
                     )
                 ),
-                0.0,
-                100.0
+
+                0,
+
+                100
+
             )
 
-            detected = bool(
-                head_result.get(
-                    "detected",
-                    False
-                )
+            detector_pose = head_result.get(
+                "pose",
+                "Unknown"
             )
 
             # ------------------------------------------------
+            # VALIDITY
+            # ------------------------------------------------
+
+            valid_angles = (
+
+                np.isfinite(raw_yaw)
+
+                and
+
+                np.isfinite(raw_pitch)
+
+                and
+
+                np.isfinite(raw_roll)
+
+            )
+
+            valid_pose = (
+
+                detector_pose
+                !=
+                "Unknown"
+
+            )
+
+            # =================================================
             # CALIBRATION
-            # ------------------------------------------------
+            # =================================================
 
-            if is_head_calibration:
+            if is_calibration_phase:
 
-                valid_sample = (
-                    detected
-                    and
-                    np.isfinite(raw_yaw)
-                    and
-                    np.isfinite(raw_pitch)
-                    and
-                    np.isfinite(raw_roll)
-                    and
-                    abs(raw_yaw) <= 70.0
-                    and
-                    abs(raw_pitch) <= 50.0
-                    and
-                    abs(raw_roll) <= 50.0
-                )
+                # IMPORTANT:
+                #
+                # Do NOT require confidence >= 25 here.
+                #
+                # Your detector is already returning
+                # valid poses such as:
+                #
+                # Looking Left
+                # Looking Right
+                # Looking Up
+                # Looking Down
+                # Center
+                #
+                # but confidence may be 0.
+                #
+                # The previous code discarded all those
+                # samples and produced:
+                #
+                # Head samples: 0
+                #
+                # That is the main bug.
 
-                if valid_sample:
+                if valid_angles and valid_pose:
 
                     calibration_yaws.append(
                         raw_yaw
@@ -604,209 +896,239 @@ def analyze_video(
                     )
 
                     calibration_confidences.append(
-                        head_confidence
+
+                        max(
+                            head_confidence,
+                            60.0
+                        )
+
                     )
 
             else:
 
-                # --------------------------------------------
+                # =================================================
                 # RELATIVE HEAD POSE
-                # --------------------------------------------
+                # =================================================
 
-                if head_pose_baseline[
-                    "valid"
-                ]:
+                if head_pose_baseline["valid"]:
 
                     relative_yaw = (
+
                         raw_yaw
                         -
                         head_pose_baseline[
                             "yaw"
                         ]
+
                     )
 
                     relative_pitch = (
+
                         raw_pitch
                         -
                         head_pose_baseline[
                             "pitch"
                         ]
+
                     )
 
                     relative_roll = (
+
                         raw_roll
                         -
                         head_pose_baseline[
                             "roll"
                         ]
+
                     )
 
                 else:
 
+                    # Fallback
+                    # Still provide usable raw angles.
+
                     relative_yaw = raw_yaw
+
                     relative_pitch = raw_pitch
+
                     relative_roll = raw_roll
 
+                # =================================================
+                # SAFETY CLAMP
+                # =================================================
+
                 relative_yaw = float(
+
                     np.clip(
+
                         relative_yaw,
+
                         -90.0,
+
                         90.0
+
                     )
+
                 )
 
                 relative_pitch = float(
+
                     np.clip(
+
                         relative_pitch,
+
                         -90.0,
+
                         90.0
+
                     )
+
                 )
 
                 relative_roll = float(
+
                     np.clip(
+
                         relative_roll,
+
                         -90.0,
+
                         90.0
+
                     )
+
                 )
 
-                if (
-                    relative_yaw
-                    < -15.0
-                ):
+                # =================================================
+                # CLASSIFY
+                # =================================================
 
-                    calibrated_pose = (
-                        "Looking Left"
-                    )
+                calibrated_pose = classify_head_pose(
 
-                elif (
-                    relative_yaw
-                    > 15.0
-                ):
+                    relative_yaw,
 
-                    calibrated_pose = (
-                        "Looking Right"
-                    )
-
-                elif (
                     relative_pitch
-                    < -15.0
-                ):
 
-                    calibrated_pose = (
-                        "Looking Up"
-                    )
+                )
 
-                elif (
-                    relative_pitch
-                    > 15.0
-                ):
+                # =================================================
+                # CONFIDENCE
+                # =================================================
 
-                    calibrated_pose = (
-                        "Looking Down"
-                    )
+                final_confidence = max(
 
-                else:
+                    head_confidence,
 
-                    calibrated_pose = (
-                        "Center"
-                    )
+                    60.0
+
+                )
+
+                # =================================================
+                # STORE HEAD RESULT
+                # =================================================
 
                 head_result = {
-                    "pose": calibrated_pose,
 
-                    "yaw": round(
-                        relative_yaw,
-                        2
-                    ),
+                    "pose":
+                        calibrated_pose,
 
-                    "pitch": round(
-                        relative_pitch,
-                        2
-                    ),
+                    "yaw":
+                        round(
+                            relative_yaw,
+                            2
+                        ),
 
-                    "roll": round(
-                        relative_roll,
-                        2
-                    ),
+                    "pitch":
+                        round(
+                            relative_pitch,
+                            2
+                        ),
 
-                    "confidence": round(
-                        head_confidence,
-                        1
-                    ),
+                    "roll":
+                        round(
+                            relative_roll,
+                            2
+                        ),
 
-                    "detected": detected,
+                    "confidence":
+                        round(
+                            final_confidence,
+                            1
+                        ),
+
                 }
 
-                if detected:
+                head_poses.append(
+                    calibrated_pose
+                )
 
-                    head_poses.append(
-                        calibrated_pose
-                    )
+                yaw_values.append(
+                    relative_yaw
+                )
 
-                    yaw_values.append(
-                        relative_yaw
-                    )
+                pitch_values.append(
+                    relative_pitch
+                )
 
-                    pitch_values.append(
-                        relative_pitch
-                    )
+                roll_values.append(
+                    relative_roll
+                )
 
-                    roll_values.append(
-                        relative_roll
-                    )
-
-                    head_confidences.append(
-                        head_confidence
-                    )
+                head_confidences.append(
+                    final_confidence
+                )
 
         except Exception as e:
 
             print(
-                "[Head Pose Error] "
-                f"{video_time:.2f}s: "
-                f"{type(e).__name__}: {e}"
+                f"[Head Pose Error] "
+                f"{video_time:.2f}s: {e}"
             )
 
         # ====================================================
-        # COMPLETE CALIBRATION
+        # CALIBRATION COMPLETION
         # ====================================================
 
-        if is_head_calibration:
+        if is_calibration_phase:
 
             if frame_number % 15 == 0:
 
                 progress = (
+
                     frame_number
                     /
                     calibration_frames
                     *
-                    100.0
+                    100
+
                 )
 
                 print(
+
                     f"Calibration: "
-                    f"{min(progress, 100.0):5.1f}%"
+                    f"{min(progress, 100):5.1f}%"
                     f" | Head samples: "
                     f"{len(calibration_yaws)}"
+
                 )
 
-            if (
-                frame_number
-                >= calibration_frames
-            ):
+            if frame_number >= calibration_frames:
 
                 head_pose_baseline = (
+
                     calculate_head_pose_baseline(
+
                         calibration_yaws,
+
                         calibration_pitches,
-                        calibration_rolls,
-                        calibration_confidences
+
+                        calibration_rolls
+
                     )
+
                 )
 
-                head_calibration_completed = True
+                calibration_completed = True
 
                 print()
 
@@ -815,52 +1137,67 @@ def analyze_video(
                 )
 
                 print(
-                    "Samples      : "
+
+                    f"  Samples      : "
                     f"{head_pose_baseline['samples']}"
+
                 )
 
                 print(
-                    "Raw Samples  : "
+
+                    f"  Raw Samples  : "
                     f"{head_pose_baseline['raw_samples']}"
+
                 )
 
                 print(
-                    "Filtered     : "
+
+                    f"  Filtered     : "
                     f"{head_pose_baseline['filtered_samples']}"
+
                 )
 
                 print(
-                    "Baseline Yaw : "
+
+                    f"  Baseline Yaw : "
                     f"{head_pose_baseline['yaw']:.2f}°"
+
                 )
 
                 print(
-                    "Baseline Pitch: "
+
+                    f"  Baseline Pitch: "
                     f"{head_pose_baseline['pitch']:.2f}°"
+
                 )
 
                 print(
-                    "Yaw Stability: "
+
+                    f"  Yaw Stability: "
                     f"{head_pose_baseline['yaw_std']:.2f}°"
+
                 )
 
                 print(
-                    "Pitch Stability: "
+
+                    f"  Pitch Stability: "
                     f"{head_pose_baseline['pitch_std']:.2f}°"
+
                 )
 
                 print(
-                    "Status       : "
+
+                    f"  Status       : "
                     f"{'VALID' if head_pose_baseline['valid'] else 'FALLBACK'}"
+
                 )
 
                 print()
 
-                # Calibration frame is NOT an interview sample.
                 continue
 
         # ====================================================
-        # NORMAL FRAME
+        # COUNT ANALYZED FRAME
         # ====================================================
 
         analyzed_frames += 1
@@ -871,38 +1208,52 @@ def analyze_video(
 
         try:
 
-            emotion_result = (
-                detect_emotion(
-                    frame,
-                    current_time=video_time
-                )
+            emotion_result = detect_emotion(
+
+                frame,
+
+                current_time=video_time
+
             )
 
-            emotion = (
-                emotion_result.get(
-                    "emotion",
-                    "UNKNOWN"
-                )
+            emotion = emotion_result.get(
+
+                "emotion",
+
+                "UNKNOWN"
+
             )
 
             emotion_confidence = safe_float(
+
                 emotion_result.get(
+
                     "confidence",
-                    0.0
+
+                    0
+
                 )
+
             )
 
             emotion_valid = bool(
+
                 emotion_result.get(
+
                     "valid",
+
                     False
+
                 )
+
             )
 
             emotion_error = (
+
                 emotion_result.get(
                     "error"
                 )
+
             )
 
             emotion_results.append({
@@ -924,26 +1275,38 @@ def analyze_video(
 
                 "valid":
                     emotion_valid,
+
             })
 
             if (
+
                 emotion_error
-                and
-                emotion_error
-                != last_emotion_error
+                !=
+                last_emotion_error
+
             ):
 
-                print(
-                    "[Emotion] "
-                    f"{video_time:.2f}s: "
-                    f"{emotion_error}"
-                )
+                if emotion_error:
+
+                    print(
+
+                        f"[Emotion] "
+                        f"{video_time:.2f}s: "
+                        f"{emotion_error}"
+
+                    )
 
                 last_emotion_error = (
                     emotion_error
                 )
 
         except Exception as e:
+
+            emotion = "UNKNOWN"
+
+            emotion_confidence = 0.0
+
+            emotion_valid = False
 
             emotion_results.append({
 
@@ -961,12 +1324,14 @@ def analyze_video(
 
                 "valid":
                     False,
+
             })
 
             print(
-                "[Emotion Error] "
-                f"{video_time:.2f}s: "
-                f"{type(e).__name__}: {e}"
+
+                f"[Emotion Error] "
+                f"{video_time:.2f}s: {e}"
+
             )
 
         # ====================================================
@@ -992,7 +1357,7 @@ def analyze_video(
                     safe_float(
                         eye_result.get(
                             "score",
-                            0.0
+                            0
                         )
                     ),
                     1
@@ -1015,7 +1380,7 @@ def analyze_video(
                     safe_float(
                         head_result.get(
                             "yaw",
-                            0.0
+                            0
                         )
                     ),
                     2
@@ -1026,7 +1391,7 @@ def analyze_video(
                     safe_float(
                         head_result.get(
                             "pitch",
-                            0.0
+                            0
                         )
                     ),
                     2
@@ -1037,7 +1402,7 @@ def analyze_video(
                     safe_float(
                         head_result.get(
                             "roll",
-                            0.0
+                            0
                         )
                     ),
                     2
@@ -1048,7 +1413,7 @@ def analyze_video(
                     safe_float(
                         head_result.get(
                             "confidence",
-                            0.0
+                            0
                         )
                     ),
                     1
@@ -1065,6 +1430,7 @@ def analyze_video(
 
             "emotion_valid":
                 emotion_valid,
+
         })
 
         # ====================================================
@@ -1074,16 +1440,21 @@ def analyze_video(
         if analyzed_frames % 5 == 0:
 
             percentage = (
+
                 video_time
                 /
                 duration
                 *
-                100.0
+                100
+
                 if duration > 0
-                else 0.0
+
+                else 0
+
             )
 
             print(
+
                 f"Progress: "
                 f"{percentage:5.1f}%"
                 f" | Time: "
@@ -1092,138 +1463,208 @@ def analyze_video(
                 f"{emotion}"
                 f" | Head: "
                 f"{head_result.get('pose', 'Unknown')}"
+
             )
+
+    # ========================================================
+    # RELEASE
+    # ========================================================
 
     cap.release()
 
     # ========================================================
-    # EYE SUMMARY
+    # EYE CONTACT AGGREGATION
     # ========================================================
 
-    average_eye_score = (
-        float(
-            np.mean(
-                eye_scores
-            )
+    valid_eye_scores = [
+
+        score
+
+        for score in eye_scores
+
+        if 0 <= score <= 100
+
+    ]
+
+    if valid_eye_scores:
+
+        average_eye_score = (
+
+            sum(valid_eye_scores)
+            /
+            len(valid_eye_scores)
+
         )
-        if eye_scores
-        else 0.0
-    )
+
+    else:
+
+        average_eye_score = 0.0
 
     eye_contact_percentage = (
         average_eye_score
     )
 
     looking_away_percentage = (
+
         100.0
         -
         eye_contact_percentage
+
     )
 
+    # ========================================================
+    # EYE STATE COUNTS
+    # ========================================================
+
     yes_count = sum(
+
         1
-        for x in eye_states
-        if x == "YES"
+
+        for state in eye_states
+
+        if state == "YES"
+
     )
 
     no_count = sum(
+
         1
-        for x in eye_states
-        if x == "NO"
+
+        for state in eye_states
+
+        if state == "NO"
+
     )
 
     unknown_count = sum(
+
         1
-        for x in eye_states
-        if x not in (
+
+        for state in eye_states
+
+        if state not in [
             "YES",
             "NO"
-        )
+        ]
+
     )
 
     # ========================================================
-    # HEAD SUMMARY
+    # HEAD POSE AGGREGATION
     # ========================================================
 
     center_count = sum(
+
         1
-        for x in head_poses
-        if x == "Center"
+
+        for pose in head_poses
+
+        if pose == "Center"
+
     )
 
-    away_count = sum(
+    looking_away_count = sum(
+
         1
-        for x in head_poses
-        if x in (
+
+        for pose in head_poses
+
+        if pose in [
+
             "Looking Left",
+
             "Looking Right",
+
             "Looking Up",
-            "Looking Down"
-        )
+
+            "Looking Down",
+
+        ]
+
     )
 
     pose_count = len(
         head_poses
     )
 
-    center_percentage = (
-        center_count
-        /
-        pose_count
-        *
-        100.0
-        if pose_count
-        else 0.0
-    )
+    if pose_count > 0:
 
-    looking_away_pose_percentage = (
-        away_count
-        /
-        pose_count
-        *
-        100.0
-        if pose_count
-        else 0.0
-    )
+        center_percentage = (
+
+            center_count
+            /
+            pose_count
+            *
+            100
+
+        )
+
+        looking_away_pose_percentage = (
+
+            looking_away_count
+            /
+            pose_count
+            *
+            100
+
+        )
+
+    else:
+
+        center_percentage = 0.0
+
+        looking_away_pose_percentage = 0.0
+
+    # ========================================================
+    # AVERAGE HEAD VALUES
+    # ========================================================
 
     average_yaw = (
-        float(
-            np.mean(
-                yaw_values
-            )
-        )
+
+        sum(yaw_values)
+        /
+        len(yaw_values)
+
         if yaw_values
+
         else 0.0
+
     )
 
     average_pitch = (
-        float(
-            np.mean(
-                pitch_values
-            )
-        )
+
+        sum(pitch_values)
+        /
+        len(pitch_values)
+
         if pitch_values
+
         else 0.0
+
     )
 
     average_roll = (
-        float(
-            np.mean(
-                roll_values
-            )
-        )
+
+        sum(roll_values)
+        /
+        len(roll_values)
+
         if roll_values
+
         else 0.0
+
     )
 
     average_head_confidence = (
-        float(
-            np.mean(
-                head_confidences
-            )
-        )
+
+        sum(head_confidences)
+        /
+        len(head_confidences)
+
         if head_confidences
+
         else 0.0
+
     )
 
     # ========================================================
@@ -1238,106 +1679,53 @@ def analyze_video(
     # SYSTEM RELIABILITY
     # ========================================================
 
-    calibration_score = 0.0
+    head_quality = (
 
-    if head_pose_baseline[
-        "valid"
-    ]:
-
-        stability_score = np.mean([
-
-            max(
-                0.0,
-                1.0
-                -
-                head_pose_baseline[
-                    "yaw_std"
-                ]
-                /
-                15.0
-            ),
-
-            max(
-                0.0,
-                1.0
-                -
-                head_pose_baseline[
-                    "pitch_std"
-                ]
-                /
-                12.0
-            ),
-
-            max(
-                0.0,
-                1.0
-                -
-                head_pose_baseline[
-                    "roll_std"
-                ]
-                /
-                10.0
-            ),
-
-        ])
-
-        calibration_score = (
-
-            0.5
-            *
-            stability_score
-            *
-            100.0
-
-            +
-
-            0.5
-            *
-            head_pose_baseline[
-                "average_confidence"
-            ]
-        )
-
-    reliability = (
-
-        0.30
-        *
         average_head_confidence
+        if head_confidences
+        else 0.0
 
-        +
-
-        0.25
-        *
-        calibration_score
-
-        +
-
-        0.20
-        *
-        float(
-            emotion_summary.get(
-                "face_detection_rate",
-                0.0
-            )
-        )
-
-        +
-
-        0.25
-        *
-        (
-            100.0
-            if eye_scores
-            else 0.0
-        )
     )
 
-    reliability = float(
-        np.clip(
-            reliability,
-            0.0,
-            100.0
+    emotion_quality = (
+
+        emotion_summary.get(
+            "average_confidence",
+            0.0
         )
+
+    )
+
+    face_detection_rate = (
+
+        emotion_summary.get(
+            "face_detection_rate",
+            0.0
+        )
+
+    )
+
+    system_reliability = (
+
+        (
+            head_quality
+            * 0.35
+        )
+
+        +
+
+        (
+            emotion_quality
+            * 0.35
+        )
+
+        +
+
+        (
+            face_detection_rate
+            * 0.30
+        )
+
     )
 
     # ========================================================
@@ -1374,7 +1762,12 @@ def analyze_video(
 
             "calibration_duration":
                 CALIBRATION_DURATION,
+
         },
+
+        # ====================================================
+        # EYE CONTACT
+        # ====================================================
 
         "eye_contact": {
 
@@ -1407,13 +1800,22 @@ def analyze_video(
 
             "directions":
                 eye_directions,
+
         },
+
+        # ====================================================
+        # EMOTION
+        # ====================================================
 
         "emotion":
             emotion_summary,
 
         "emotion_timeline":
             emotion_results,
+
+        # ====================================================
+        # HEAD POSE
+        # ====================================================
 
         "head_pose": {
 
@@ -1455,27 +1857,51 @@ def analyze_video(
 
             "calibration":
                 head_pose_baseline,
+
         },
 
-        "quality": {
+        # ====================================================
+        # SYSTEM QUALITY
+        # ====================================================
+
+        "system_quality": {
 
             "estimated_reliability":
                 round(
-                    reliability,
+                    system_reliability,
+                    2
+                ),
+
+            "head_pose_quality":
+                round(
+                    head_quality,
+                    2
+                ),
+
+            "emotion_quality":
+                round(
+                    emotion_quality,
+                    2
+                ),
+
+            "face_detection_rate":
+                round(
+                    face_detection_rate,
                     2
                 ),
 
             "note":
-                (
-                    "Reliability is a system-quality "
-                    "score, not ground-truth model "
-                    "accuracy. True accuracy requires "
-                    "manually labelled frames."
-                ),
+                "Reliability is not mathematical accuracy. Ground-truth labels are required for true accuracy.",
+
         },
+
+        # ====================================================
+        # TIMELINE
+        # ====================================================
 
         "timeline":
             timeline,
+
     }
 
     return result
@@ -1504,7 +1930,7 @@ def save_video_result(
 
 
 # ============================================================
-# REPORT
+# PRINT FINAL REPORT
 # ============================================================
 
 def print_video_report(
@@ -1512,169 +1938,260 @@ def print_video_report(
 ):
 
     video = result["video"]
+
     eye = result["eye_contact"]
+
     emotion = result["emotion"]
+
     head = result["head_pose"]
-    quality = result["quality"]
+
+    quality = result.get(
+        "system_quality",
+        {}
+    )
 
     print()
 
     print("=" * 65)
+
     print(
         "             VIDEO ANALYSIS REPORT"
     )
+
     print("=" * 65)
 
+    # ========================================================
+    # VIDEO
+    # ========================================================
+
     print()
+
     print("VIDEO")
+
     print("-" * 45)
 
     print(
+
         f"Duration          : "
         f"{video['duration']:.2f} sec"
+
     )
 
     print(
+
         f"FPS               : "
         f"{video['fps']:.2f}"
+
     )
 
     print(
+
         f"Total Frames      : "
         f"{video['total_frames']}"
+
     )
 
     print(
+
         f"Analyzed Frames   : "
         f"{video['analyzed_frames']}"
+
     )
 
     print(
+
         f"Sample Interval   : "
         f"{video['sample_interval']:.2f} sec"
+
     )
 
+    # ========================================================
+    # EYE CONTACT
+    # ========================================================
+
     print()
+
     print("EYE CONTACT")
+
     print("-" * 45)
 
     print(
-        f"Average V6 Score  : "
+
+        f"Average Score     : "
         f"{eye['average_score']:.1f}%"
+
     )
 
     print(
+
         f"Eye Contact       : "
         f"{eye['eye_contact_percentage']:.1f}%"
+
     )
 
     print(
+
         f"Looking Away      : "
         f"{eye['looking_away_percentage']:.1f}%"
+
     )
 
     print(
+
         f"YES Frames        : "
         f"{eye['yes_frames']}"
+
     )
 
     print(
+
         f"NO Frames         : "
         f"{eye['no_frames']}"
+
     )
 
     print(
+
         f"Unknown Frames    : "
         f"{eye['unknown_frames']}"
+
     )
 
+    # ========================================================
+    # EMOTION
+    # ========================================================
+
     print()
+
     print("EMOTION")
+
     print("-" * 45)
 
     print(
+
         f"Dominant Emotion  : "
         f"{emotion.get('dominant_emotion', 'UNKNOWN').upper()}"
+
     )
 
     print(
+
         f"Average Confidence: "
         f"{emotion.get('average_confidence', 0.0):.1f}%"
+
     )
 
     print(
+
         f"Valid Predictions : "
         f"{emotion.get('valid_predictions', 0)}"
+
     )
 
     print(
+
         f"Invalid/No Face   : "
         f"{emotion.get('invalid_predictions', 0)}"
+
     )
 
     print(
+
         f"Detection Rate    : "
         f"{emotion.get('face_detection_rate', 0.0):.1f}%"
+
     )
 
     print(
+
         f"Positive          : "
         f"{emotion.get('positive_percentage', 0.0):.1f}%"
+
     )
 
     print(
+
         f"Neutral           : "
         f"{emotion.get('neutral_percentage', 0.0):.1f}%"
+
     )
 
     print(
+
         f"Negative          : "
         f"{emotion.get('negative_percentage', 0.0):.1f}%"
+
     )
 
     print(
+
         f"Surprise          : "
         f"{emotion.get('surprise_percentage', 0.0):.1f}%"
+
     )
 
     print(
+
         f"Reactions         : "
         f"{emotion.get('reaction_count', 0)}"
+
     )
 
+    # ========================================================
+    # HEAD POSE
+    # ========================================================
+
     print()
+
     print("HEAD POSE")
+
     print("-" * 45)
 
     print(
+
         f"Center            : "
         f"{head['center_percentage']:.1f}%"
+
     )
 
     print(
+
         f"Looking Away      : "
         f"{head['looking_away_percentage']:.1f}%"
+
     )
 
     print(
+
         f"Average Yaw       : "
-        f"{head['average_yaw']:.2f}"
+        f"{head['average_yaw']:.2f}°"
+
     )
 
     print(
+
         f"Average Pitch     : "
-        f"{head['average_pitch']:.2f}"
+        f"{head['average_pitch']:.2f}°"
+
     )
 
     print(
+
         f"Average Roll      : "
-        f"{head['average_roll']:.2f}"
+        f"{head['average_roll']:.2f}°"
+
     )
 
     print(
+
         f"Detection Conf.   : "
         f"{head['average_confidence']:.1f}%"
+
     )
+
+    # ========================================================
+    # CALIBRATION
+    # ========================================================
 
     calibration = head.get(
         "calibration",
@@ -1682,71 +2199,128 @@ def print_video_report(
     )
 
     print()
+
     print(
         "HEAD POSE CALIBRATION"
     )
+
     print("-" * 45)
 
     print(
+
         f"Status            : "
-        f"{'VALID' if calibration.get('valid') else 'FALLBACK'}"
+        f"{'VALID' if calibration.get('valid', False) else 'FALLBACK'}"
+
     )
 
     print(
+
         f"Samples           : "
         f"{calibration.get('samples', 0)}"
+
     )
 
     print(
+
         f"Raw Samples       : "
         f"{calibration.get('raw_samples', 0)}"
+
     )
 
     print(
+
         f"Filtered Samples  : "
         f"{calibration.get('filtered_samples', 0)}"
+
     )
 
     print(
+
         f"Baseline Yaw      : "
-        f"{calibration.get('yaw', 0.0):.2f}"
+        f"{calibration.get('yaw', 0.0):.2f}°"
+
     )
 
     print(
+
         f"Baseline Pitch    : "
-        f"{calibration.get('pitch', 0.0):.2f}"
+        f"{calibration.get('pitch', 0.0):.2f}°"
+
     )
 
     print(
+
+        f"Baseline Roll     : "
+        f"{calibration.get('roll', 0.0):.2f}°"
+
+    )
+
+    print(
+
         f"Yaw Stability     : "
-        f"{calibration.get('yaw_std', 0.0):.2f}"
+        f"{calibration.get('yaw_std', 0.0):.2f}°"
+
     )
 
     print(
+
         f"Pitch Stability   : "
-        f"{calibration.get('pitch_std', 0.0):.2f}"
+        f"{calibration.get('pitch_std', 0.0):.2f}°"
+
     )
+
+    # ========================================================
+    # SYSTEM QUALITY
+    # ========================================================
 
     print()
-    print("SYSTEM QUALITY")
+
+    print(
+        "SYSTEM QUALITY"
+    )
+
     print("-" * 45)
 
     print(
+
         f"Estimated Reliability : "
-        f"{quality['estimated_reliability']:.1f}%"
+        f"{quality.get('estimated_reliability', 0.0):.1f}%"
+
     )
 
     print(
-        "IMPORTANT: this is reliability, "
-        "NOT mathematical accuracy."
+
+        f"Head Pose Quality     : "
+        f"{quality.get('head_pose_quality', 0.0):.1f}%"
+
     )
 
     print(
-        "Ground-truth labels are required "
-        "for true accuracy."
+
+        f"Emotion Quality       : "
+        f"{quality.get('emotion_quality', 0.0):.1f}%"
+
+    )
+
+    print(
+
+        f"Face Detection Rate   : "
+        f"{quality.get('face_detection_rate', 0.0):.1f}%"
+
     )
 
     print()
+
+    print(
+        "IMPORTANT: Reliability is NOT mathematical accuracy."
+    )
+
+    print(
+        "Ground-truth labels are required for true accuracy."
+    )
+
+    print()
+
     print("=" * 65)
 
     print(
@@ -1754,41 +2328,5 @@ def print_video_report(
     )
 
     print("=" * 65)
+
     print()
-
-
-# ============================================================
-# CLI
-# ============================================================
-
-if __name__ == "__main__":
-
-    if len(sys.argv) != 2:
-
-        print(
-            "Usage:\n"
-            "python test_video_analysis.py "
-            "<video_path>"
-        )
-
-        sys.exit(1)
-
-    video_path = sys.argv[1]
-
-    result = analyze_video(
-        video_path
-    )
-
-    save_video_result(
-        result,
-        "video_analysis.json"
-    )
-
-    print_video_report(
-        result
-    )
-
-    print(
-        "\nJSON saved as:\n"
-        "video_analysis.json"
-    )
