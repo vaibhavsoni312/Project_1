@@ -1,0 +1,2181 @@
+{
+    "video": {
+        "path": "sample.mp4",
+        "duration": 6.61,
+        "fps": 29.97,
+        "total_frames": 198,
+        "analyzed_frames": 104,
+        "sample_interval": 0.25,
+        "calibration_duration": 3.0
+    },
+    "eye_contact": {
+        "average_score": 0.0,
+        "eye_contact_percentage": 0.0,
+        "looking_away_percentage": 100.0,
+        "yes_frames": 0,
+        "no_frames": 0,
+        "unknown_frames": 16,
+        "directions": [
+            "Calibrating",
+            "Eyes unavailable",
+            "Calibrating",
+            "Eyes unavailable",
+            "Calibrating",
+            "Eyes unavailable",
+            "Eyes unavailable",
+            "Eyes unavailable",
+            "Eyes unavailable",
+            "Calibrating",
+            "Calibrating",
+            "Calibrating",
+            "Calibrating",
+            "Calibrating",
+            "Calibrating",
+            "Calibrating"
+        ]
+    },
+    "emotion": {
+        "predictions": 19,
+        "valid_predictions": 19,
+        "invalid_predictions": 0,
+        "face_detection_rate": 100.0,
+        "dominant_emotion": "happy",
+        "average_confidence": 93.53,
+        "stability": 100.0,
+        "positive_percentage": 89.47,
+        "neutral_percentage": 10.53,
+        "negative_percentage": 0.0,
+        "surprise_percentage": 0.0,
+        "emotion_scores": {
+            "angry": 0.02,
+            "disgust": 0.0,
+            "fear": 0.2,
+            "happy": 87.35,
+            "sad": 2.84,
+            "surprise": 0.01,
+            "neutral": 9.59
+        },
+        "reaction_count": 1,
+        "transition_count": 1,
+        "timeline": [
+            {
+                "time": 1.368,
+                "from": "neutral",
+                "to": "happy"
+            }
+        ],
+        "valid": true,
+        "error": null
+    },
+    "emotion_timeline": [
+        {
+            "time": 0.03,
+            "emotion": "neutral",
+            "confidence": 71.26,
+            "valid": true
+        },
+        {
+            "time": 0.07,
+            "emotion": "neutral",
+            "confidence": 71.26,
+            "valid": true
+        },
+        {
+            "time": 0.1,
+            "emotion": "neutral",
+            "confidence": 71.26,
+            "valid": true
+        },
+        {
+            "time": 0.13,
+            "emotion": "neutral",
+            "confidence": 71.26,
+            "valid": true
+        },
+        {
+            "time": 0.17,
+            "emotion": "neutral",
+            "confidence": 71.26,
+            "valid": true
+        },
+        {
+            "time": 0.2,
+            "emotion": "neutral",
+            "confidence": 71.26,
+            "valid": true
+        },
+        {
+            "time": 0.23,
+            "emotion": "neutral",
+            "confidence": 71.26,
+            "valid": true
+        },
+        {
+            "time": 0.27,
+            "emotion": "neutral",
+            "confidence": 71.26,
+            "valid": true
+        },
+        {
+            "time": 0.3,
+            "emotion": "neutral",
+            "confidence": 99.86,
+            "valid": true
+        },
+        {
+            "time": 0.33,
+            "emotion": "neutral",
+            "confidence": 99.86,
+            "valid": true
+        },
+        {
+            "time": 0.37,
+            "emotion": "neutral",
+            "confidence": 99.86,
+            "valid": true
+        },
+        {
+            "time": 0.4,
+            "emotion": "neutral",
+            "confidence": 99.86,
+            "valid": true
+        },
+        {
+            "time": 0.43,
+            "emotion": "neutral",
+            "confidence": 99.86,
+            "valid": true
+        },
+        {
+            "time": 0.47,
+            "emotion": "neutral",
+            "confidence": 99.86,
+            "valid": true
+        },
+        {
+            "time": 0.5,
+            "emotion": "neutral",
+            "confidence": 99.86,
+            "valid": true
+        },
+        {
+            "time": 0.53,
+            "emotion": "neutral",
+            "confidence": 99.86,
+            "valid": true
+        },
+        {
+            "time": 0.57,
+            "emotion": "happy",
+            "confidence": 85.13,
+            "valid": true
+        },
+        {
+            "time": 0.6,
+            "emotion": "happy",
+            "confidence": 85.13,
+            "valid": true
+        },
+        {
+            "time": 0.63,
+            "emotion": "happy",
+            "confidence": 85.13,
+            "valid": true
+        },
+        {
+            "time": 0.67,
+            "emotion": "happy",
+            "confidence": 85.13,
+            "valid": true
+        },
+        {
+            "time": 0.7,
+            "emotion": "happy",
+            "confidence": 85.13,
+            "valid": true
+        },
+        {
+            "time": 0.73,
+            "emotion": "happy",
+            "confidence": 85.13,
+            "valid": true
+        },
+        {
+            "time": 0.77,
+            "emotion": "happy",
+            "confidence": 85.13,
+            "valid": true
+        },
+        {
+            "time": 0.8,
+            "emotion": "happy",
+            "confidence": 85.13,
+            "valid": true
+        },
+        {
+            "time": 0.83,
+            "emotion": "neutral",
+            "confidence": 67.81,
+            "valid": true
+        },
+        {
+            "time": 0.87,
+            "emotion": "neutral",
+            "confidence": 67.81,
+            "valid": true
+        },
+        {
+            "time": 0.9,
+            "emotion": "neutral",
+            "confidence": 67.81,
+            "valid": true
+        },
+        {
+            "time": 0.93,
+            "emotion": "neutral",
+            "confidence": 67.81,
+            "valid": true
+        },
+        {
+            "time": 0.97,
+            "emotion": "neutral",
+            "confidence": 67.81,
+            "valid": true
+        },
+        {
+            "time": 1.0,
+            "emotion": "neutral",
+            "confidence": 67.81,
+            "valid": true
+        },
+        {
+            "time": 1.03,
+            "emotion": "neutral",
+            "confidence": 67.81,
+            "valid": true
+        },
+        {
+            "time": 1.07,
+            "emotion": "neutral",
+            "confidence": 67.81,
+            "valid": true
+        },
+        {
+            "time": 1.1,
+            "emotion": "happy",
+            "confidence": 99.93,
+            "valid": true
+        },
+        {
+            "time": 1.13,
+            "emotion": "happy",
+            "confidence": 99.93,
+            "valid": true
+        },
+        {
+            "time": 1.17,
+            "emotion": "happy",
+            "confidence": 99.93,
+            "valid": true
+        },
+        {
+            "time": 1.2,
+            "emotion": "happy",
+            "confidence": 99.93,
+            "valid": true
+        },
+        {
+            "time": 1.23,
+            "emotion": "happy",
+            "confidence": 99.93,
+            "valid": true
+        },
+        {
+            "time": 1.27,
+            "emotion": "happy",
+            "confidence": 99.93,
+            "valid": true
+        },
+        {
+            "time": 1.3,
+            "emotion": "happy",
+            "confidence": 99.93,
+            "valid": true
+        },
+        {
+            "time": 1.33,
+            "emotion": "happy",
+            "confidence": 99.93,
+            "valid": true
+        },
+        {
+            "time": 1.37,
+            "emotion": "happy",
+            "confidence": 89.37,
+            "valid": true
+        },
+        {
+            "time": 1.4,
+            "emotion": "happy",
+            "confidence": 89.37,
+            "valid": true
+        },
+        {
+            "time": 1.43,
+            "emotion": "happy",
+            "confidence": 89.37,
+            "valid": true
+        },
+        {
+            "time": 1.47,
+            "emotion": "happy",
+            "confidence": 89.37,
+            "valid": true
+        },
+        {
+            "time": 1.5,
+            "emotion": "happy",
+            "confidence": 89.37,
+            "valid": true
+        },
+        {
+            "time": 1.53,
+            "emotion": "happy",
+            "confidence": 89.37,
+            "valid": true
+        },
+        {
+            "time": 1.57,
+            "emotion": "happy",
+            "confidence": 89.37,
+            "valid": true
+        },
+        {
+            "time": 1.6,
+            "emotion": "happy",
+            "confidence": 89.37,
+            "valid": true
+        },
+        {
+            "time": 1.63,
+            "emotion": "happy",
+            "confidence": 83.43,
+            "valid": true
+        },
+        {
+            "time": 1.67,
+            "emotion": "happy",
+            "confidence": 83.43,
+            "valid": true
+        },
+        {
+            "time": 1.7,
+            "emotion": "happy",
+            "confidence": 83.43,
+            "valid": true
+        },
+        {
+            "time": 1.74,
+            "emotion": "happy",
+            "confidence": 83.43,
+            "valid": true
+        },
+        {
+            "time": 1.77,
+            "emotion": "happy",
+            "confidence": 83.43,
+            "valid": true
+        },
+        {
+            "time": 1.8,
+            "emotion": "happy",
+            "confidence": 83.43,
+            "valid": true
+        },
+        {
+            "time": 1.84,
+            "emotion": "happy",
+            "confidence": 83.43,
+            "valid": true
+        },
+        {
+            "time": 1.87,
+            "emotion": "happy",
+            "confidence": 83.43,
+            "valid": true
+        },
+        {
+            "time": 1.9,
+            "emotion": "happy",
+            "confidence": 99.3,
+            "valid": true
+        },
+        {
+            "time": 1.94,
+            "emotion": "happy",
+            "confidence": 99.3,
+            "valid": true
+        },
+        {
+            "time": 1.97,
+            "emotion": "happy",
+            "confidence": 99.3,
+            "valid": true
+        },
+        {
+            "time": 2.0,
+            "emotion": "happy",
+            "confidence": 99.3,
+            "valid": true
+        },
+        {
+            "time": 2.04,
+            "emotion": "happy",
+            "confidence": 99.3,
+            "valid": true
+        },
+        {
+            "time": 2.07,
+            "emotion": "happy",
+            "confidence": 99.3,
+            "valid": true
+        },
+        {
+            "time": 2.1,
+            "emotion": "happy",
+            "confidence": 99.3,
+            "valid": true
+        },
+        {
+            "time": 2.14,
+            "emotion": "happy",
+            "confidence": 99.3,
+            "valid": true
+        },
+        {
+            "time": 2.17,
+            "emotion": "happy",
+            "confidence": 99.7,
+            "valid": true
+        },
+        {
+            "time": 2.2,
+            "emotion": "happy",
+            "confidence": 99.7,
+            "valid": true
+        },
+        {
+            "time": 2.24,
+            "emotion": "happy",
+            "confidence": 99.7,
+            "valid": true
+        },
+        {
+            "time": 2.27,
+            "emotion": "happy",
+            "confidence": 99.7,
+            "valid": true
+        },
+        {
+            "time": 2.3,
+            "emotion": "happy",
+            "confidence": 99.7,
+            "valid": true
+        },
+        {
+            "time": 2.34,
+            "emotion": "happy",
+            "confidence": 99.7,
+            "valid": true
+        },
+        {
+            "time": 2.37,
+            "emotion": "happy",
+            "confidence": 99.7,
+            "valid": true
+        },
+        {
+            "time": 2.4,
+            "emotion": "happy",
+            "confidence": 99.7,
+            "valid": true
+        },
+        {
+            "time": 2.44,
+            "emotion": "happy",
+            "confidence": 99.97,
+            "valid": true
+        },
+        {
+            "time": 2.47,
+            "emotion": "happy",
+            "confidence": 99.97,
+            "valid": true
+        },
+        {
+            "time": 2.5,
+            "emotion": "happy",
+            "confidence": 99.97,
+            "valid": true
+        },
+        {
+            "time": 2.54,
+            "emotion": "happy",
+            "confidence": 99.97,
+            "valid": true
+        },
+        {
+            "time": 2.57,
+            "emotion": "happy",
+            "confidence": 99.97,
+            "valid": true
+        },
+        {
+            "time": 2.6,
+            "emotion": "happy",
+            "confidence": 99.97,
+            "valid": true
+        },
+        {
+            "time": 2.64,
+            "emotion": "happy",
+            "confidence": 99.97,
+            "valid": true
+        },
+        {
+            "time": 2.67,
+            "emotion": "happy",
+            "confidence": 99.97,
+            "valid": true
+        },
+        {
+            "time": 2.7,
+            "emotion": "happy",
+            "confidence": 99.99,
+            "valid": true
+        },
+        {
+            "time": 2.74,
+            "emotion": "happy",
+            "confidence": 99.99,
+            "valid": true
+        },
+        {
+            "time": 2.77,
+            "emotion": "happy",
+            "confidence": 99.99,
+            "valid": true
+        },
+        {
+            "time": 2.8,
+            "emotion": "happy",
+            "confidence": 99.99,
+            "valid": true
+        },
+        {
+            "time": 2.84,
+            "emotion": "happy",
+            "confidence": 99.99,
+            "valid": true
+        },
+        {
+            "time": 2.87,
+            "emotion": "happy",
+            "confidence": 99.99,
+            "valid": true
+        },
+        {
+            "time": 2.9,
+            "emotion": "happy",
+            "confidence": 99.99,
+            "valid": true
+        },
+        {
+            "time": 2.94,
+            "emotion": "happy",
+            "confidence": 99.99,
+            "valid": true
+        },
+        {
+            "time": 3.04,
+            "emotion": "happy",
+            "confidence": 99.23,
+            "valid": true
+        },
+        {
+            "time": 3.27,
+            "emotion": "happy",
+            "confidence": 99.23,
+            "valid": true
+        },
+        {
+            "time": 3.5,
+            "emotion": "happy",
+            "confidence": 95.35,
+            "valid": true
+        },
+        {
+            "time": 3.74,
+            "emotion": "happy",
+            "confidence": 95.35,
+            "valid": true
+        },
+        {
+            "time": 3.97,
+            "emotion": "happy",
+            "confidence": 99.94,
+            "valid": true
+        },
+        {
+            "time": 4.2,
+            "emotion": "happy",
+            "confidence": 99.94,
+            "valid": true
+        },
+        {
+            "time": 4.44,
+            "emotion": "happy",
+            "confidence": 100.0,
+            "valid": true
+        },
+        {
+            "time": 4.67,
+            "emotion": "happy",
+            "confidence": 100.0,
+            "valid": true
+        },
+        {
+            "time": 4.9,
+            "emotion": "happy",
+            "confidence": 97.55,
+            "valid": true
+        },
+        {
+            "time": 5.14,
+            "emotion": "happy",
+            "confidence": 97.55,
+            "valid": true
+        },
+        {
+            "time": 5.37,
+            "emotion": "happy",
+            "confidence": 89.28,
+            "valid": true
+        },
+        {
+            "time": 5.61,
+            "emotion": "happy",
+            "confidence": 89.28,
+            "valid": true
+        },
+        {
+            "time": 5.84,
+            "emotion": "happy",
+            "confidence": 99.95,
+            "valid": true
+        },
+        {
+            "time": 6.07,
+            "emotion": "happy",
+            "confidence": 99.95,
+            "valid": true
+        },
+        {
+            "time": 6.31,
+            "emotion": "happy",
+            "confidence": 99.99,
+            "valid": true
+        },
+        {
+            "time": 6.54,
+            "emotion": "happy",
+            "confidence": 99.99,
+            "valid": true
+        }
+    ],
+    "head_pose": {
+        "center_percentage": 18.75,
+        "looking_away_percentage": 81.25,
+        "average_yaw": 17.92,
+        "average_pitch": -3.09,
+        "average_roll": -2.87,
+        "average_confidence": 95.0,
+        "calibration": {
+            "valid": true,
+            "yaw": -17.51,
+            "pitch": -5.17,
+            "roll": 11.85,
+            "yaw_std": 4.815246501610397,
+            "pitch_std": 1.5789211989985876,
+            "roll_std": 3.3540755171249095,
+            "samples": 61,
+            "raw_samples": 89,
+            "filtered_samples": 61
+        }
+    },
+    "system_quality": {
+        "estimated_reliability": 95.99,
+        "head_pose_quality": 95.0,
+        "emotion_quality": 93.53,
+        "face_detection_rate": 100.0,
+        "note": "Reliability is not mathematical accuracy. Ground-truth labels are required for true accuracy."
+    },
+    "timeline": [
+        {
+            "time": 0.03,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Center",
+            "head_yaw": 6.53,
+            "head_pitch": -9.91,
+            "head_roll": 7.21,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 71.3,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.07,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": 6.73,
+            "head_pitch": -10.28,
+            "head_roll": 7.2,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 71.3,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.1,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Center",
+            "head_yaw": 6.94,
+            "head_pitch": -10.23,
+            "head_roll": 7.21,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 71.3,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.13,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": 7.17,
+            "head_pitch": -10.44,
+            "head_roll": 7.2,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 71.3,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.17,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": 7.39,
+            "head_pitch": -10.44,
+            "head_roll": 7.21,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 71.3,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.2,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Center",
+            "head_yaw": 7.83,
+            "head_pitch": -10.44,
+            "head_roll": 7.19,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 71.3,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.23,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Center",
+            "head_yaw": 7.85,
+            "head_pitch": -10.44,
+            "head_roll": 6.87,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 71.3,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.27,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Center",
+            "head_yaw": 7.85,
+            "head_pitch": -10.75,
+            "head_roll": 6.3,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 71.3,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.3,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Up",
+            "head_yaw": 7.83,
+            "head_pitch": -12.52,
+            "head_roll": 4.84,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 99.9,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.33,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Up",
+            "head_yaw": 7.68,
+            "head_pitch": -16.8,
+            "head_roll": 3.77,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 99.9,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.37,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Up",
+            "head_yaw": 7.68,
+            "head_pitch": -24.75,
+            "head_roll": 2.31,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 99.9,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.4,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Up",
+            "head_yaw": 7.37,
+            "head_pitch": -33.32,
+            "head_roll": -1.75,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 99.9,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.43,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Up",
+            "head_yaw": 6.51,
+            "head_pitch": -39.92,
+            "head_roll": -7.28,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 99.9,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.47,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Up",
+            "head_yaw": 6.01,
+            "head_pitch": -45.64,
+            "head_roll": -10.31,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 99.9,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.5,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Up",
+            "head_yaw": 5.88,
+            "head_pitch": -47.47,
+            "head_roll": -10.31,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 99.9,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.53,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Up",
+            "head_yaw": -0.33,
+            "head_pitch": -48.83,
+            "head_roll": -10.31,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 99.9,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.57,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Up",
+            "head_yaw": -7.36,
+            "head_pitch": -48.83,
+            "head_roll": -8.04,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 85.1,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.6,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Up",
+            "head_yaw": -7.36,
+            "head_pitch": -48.83,
+            "head_roll": -8.04,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 85.1,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.63,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Up",
+            "head_yaw": -7.36,
+            "head_pitch": -42.17,
+            "head_roll": -8.04,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 85.1,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.67,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Up",
+            "head_yaw": -6.51,
+            "head_pitch": -31.88,
+            "head_roll": -11.07,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 85.1,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.7,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Up",
+            "head_yaw": -4.02,
+            "head_pitch": -21.18,
+            "head_roll": -13.21,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 85.1,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.73,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Up",
+            "head_yaw": -4.02,
+            "head_pitch": -15.52,
+            "head_roll": -13.21,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 85.1,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.77,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Up",
+            "head_yaw": -4.02,
+            "head_pitch": -15.52,
+            "head_roll": -13.21,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 85.1,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.8,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Up",
+            "head_yaw": -8.47,
+            "head_pitch": -15.52,
+            "head_roll": -8.47,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 85.1,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.83,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Up",
+            "head_yaw": -10.56,
+            "head_pitch": -15.94,
+            "head_roll": -6.5,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 67.8,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.87,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Up",
+            "head_yaw": -13.44,
+            "head_pitch": -15.94,
+            "head_roll": -3.6,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 67.8,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.9,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Left",
+            "head_yaw": -16.58,
+            "head_pitch": -15.94,
+            "head_roll": -1.28,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 67.8,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.93,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Left",
+            "head_yaw": -17.93,
+            "head_pitch": -14.03,
+            "head_roll": -0.43,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 67.8,
+            "emotion_valid": true
+        },
+        {
+            "time": 0.97,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Left",
+            "head_yaw": -19.42,
+            "head_pitch": -12.34,
+            "head_roll": 0.57,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 67.8,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.0,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Left",
+            "head_yaw": -20.63,
+            "head_pitch": -11.07,
+            "head_roll": 1.75,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 67.8,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.03,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Left",
+            "head_yaw": -21.0,
+            "head_pitch": -9.59,
+            "head_roll": 1.91,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 67.8,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.07,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Left",
+            "head_yaw": -21.0,
+            "head_pitch": -9.36,
+            "head_roll": 2.59,
+            "head_confidence": 95.0,
+            "emotion": "neutral",
+            "emotion_confidence": 67.8,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.1,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Left",
+            "head_yaw": -21.02,
+            "head_pitch": -8.5,
+            "head_roll": 2.79,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.9,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.13,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Left",
+            "head_yaw": -21.46,
+            "head_pitch": -7.79,
+            "head_roll": 3.01,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.9,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.17,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -21.3,
+            "head_pitch": -7.02,
+            "head_roll": 4.33,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.9,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.2,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Left",
+            "head_yaw": -21.48,
+            "head_pitch": -7.02,
+            "head_roll": 4.86,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.9,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.23,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -21.48,
+            "head_pitch": -6.73,
+            "head_roll": 5.75,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.9,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.27,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -21.3,
+            "head_pitch": -6.32,
+            "head_roll": 7.45,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.9,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.3,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Left",
+            "head_yaw": -20.46,
+            "head_pitch": -5.87,
+            "head_roll": 7.97,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.9,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.33,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -20.08,
+            "head_pitch": -5.04,
+            "head_roll": 9.04,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.9,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.37,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Left",
+            "head_yaw": -19.5,
+            "head_pitch": -4.61,
+            "head_roll": 9.35,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 89.4,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.4,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -19.38,
+            "head_pitch": -4.6,
+            "head_roll": 9.89,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 89.4,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.43,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -19.37,
+            "head_pitch": -4.6,
+            "head_roll": 10.31,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 89.4,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.47,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -19.04,
+            "head_pitch": -4.61,
+            "head_roll": 11.85,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 89.4,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.5,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -19.0,
+            "head_pitch": -4.94,
+            "head_roll": 11.85,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 89.4,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.53,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -18.75,
+            "head_pitch": -4.94,
+            "head_roll": 11.85,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 89.4,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.57,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Left",
+            "head_yaw": -18.45,
+            "head_pitch": -4.94,
+            "head_roll": 11.94,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 89.4,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.6,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -18.37,
+            "head_pitch": -4.92,
+            "head_roll": 11.77,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 89.4,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.63,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -18.3,
+            "head_pitch": -4.85,
+            "head_roll": 11.77,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 83.4,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.67,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -18.24,
+            "head_pitch": -4.29,
+            "head_roll": 11.82,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 83.4,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.7,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -18.16,
+            "head_pitch": -4.29,
+            "head_roll": 11.94,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 83.4,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.74,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -17.99,
+            "head_pitch": -4.29,
+            "head_roll": 11.95,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 83.4,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.77,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -17.92,
+            "head_pitch": -4.29,
+            "head_roll": 12.02,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 83.4,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.8,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -17.92,
+            "head_pitch": -4.37,
+            "head_roll": 12.02,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 83.4,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.84,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -17.92,
+            "head_pitch": -4.39,
+            "head_roll": 12.03,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 83.4,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.87,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -17.9,
+            "head_pitch": -4.4,
+            "head_roll": 12.12,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 83.4,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.9,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Left",
+            "head_yaw": -17.84,
+            "head_pitch": -4.52,
+            "head_roll": 12.12,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.3,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.94,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -17.63,
+            "head_pitch": -4.52,
+            "head_roll": 12.48,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.3,
+            "emotion_valid": true
+        },
+        {
+            "time": 1.97,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -17.51,
+            "head_pitch": -4.4,
+            "head_roll": 12.5,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.3,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.0,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Left",
+            "head_yaw": -17.17,
+            "head_pitch": -4.4,
+            "head_roll": 12.5,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.3,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.04,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Left",
+            "head_yaw": -16.87,
+            "head_pitch": -4.52,
+            "head_roll": 12.5,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.3,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.07,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Left",
+            "head_yaw": -16.85,
+            "head_pitch": -5.0,
+            "head_roll": 12.5,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.3,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.1,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Left",
+            "head_yaw": -16.51,
+            "head_pitch": -5.06,
+            "head_roll": 13.11,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.3,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.14,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -16.2,
+            "head_pitch": -5.12,
+            "head_roll": 13.11,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.3,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.17,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -15.77,
+            "head_pitch": -5.13,
+            "head_roll": 13.11,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.7,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.2,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -15.14,
+            "head_pitch": -5.17,
+            "head_roll": 13.5,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.7,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.24,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Left",
+            "head_yaw": -15.11,
+            "head_pitch": -5.17,
+            "head_roll": 13.47,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.7,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.27,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": -14.82,
+            "head_pitch": -5.41,
+            "head_roll": 13.35,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.7,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.3,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": -14.28,
+            "head_pitch": -5.41,
+            "head_roll": 13.35,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.7,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.34,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Center",
+            "head_yaw": -13.93,
+            "head_pitch": -5.41,
+            "head_roll": 13.35,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.7,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.37,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": -13.31,
+            "head_pitch": -5.17,
+            "head_roll": 12.99,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.7,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.4,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": -12.21,
+            "head_pitch": -5.17,
+            "head_roll": 12.91,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.7,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.44,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": -12.0,
+            "head_pitch": -5.17,
+            "head_roll": 12.58,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.47,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": -11.91,
+            "head_pitch": -5.34,
+            "head_roll": 12.55,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.5,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": -11.68,
+            "head_pitch": -5.37,
+            "head_roll": 12.55,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.54,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": -11.58,
+            "head_pitch": -5.39,
+            "head_roll": 12.31,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.57,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": -11.25,
+            "head_pitch": -5.45,
+            "head_roll": 12.31,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.6,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": -10.51,
+            "head_pitch": -5.45,
+            "head_roll": 11.5,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.64,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": -9.66,
+            "head_pitch": -5.4,
+            "head_roll": 11.29,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.67,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": -9.25,
+            "head_pitch": -5.4,
+            "head_roll": 11.12,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.7,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": -8.89,
+            "head_pitch": -5.4,
+            "head_roll": 10.01,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.74,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": -8.23,
+            "head_pitch": -5.4,
+            "head_roll": 9.68,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.77,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": -7.71,
+            "head_pitch": -5.48,
+            "head_roll": 9.68,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.8,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": -7.02,
+            "head_pitch": -5.56,
+            "head_roll": 9.59,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.84,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": -6.74,
+            "head_pitch": -5.75,
+            "head_roll": 9.68,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.87,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": -6.19,
+            "head_pitch": -5.87,
+            "head_roll": 9.69,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.9,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Center",
+            "head_yaw": -5.9,
+            "head_pitch": -6.04,
+            "head_roll": 10.02,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 2.94,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": -5.5,
+            "head_pitch": -6.15,
+            "head_roll": 9.69,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 3.04,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": 13.17,
+            "head_pitch": -0.95,
+            "head_roll": -1.83,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.2,
+            "emotion_valid": true
+        },
+        {
+            "time": 3.27,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Center",
+            "head_yaw": 13.62,
+            "head_pitch": -0.95,
+            "head_roll": -1.83,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.2,
+            "emotion_valid": true
+        },
+        {
+            "time": 3.5,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Center",
+            "head_yaw": 14.03,
+            "head_pitch": -1.23,
+            "head_roll": -2.06,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 95.3,
+            "emotion_valid": true
+        },
+        {
+            "time": 3.74,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Right",
+            "head_yaw": 15.78,
+            "head_pitch": -1.32,
+            "head_roll": -1.71,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 95.3,
+            "emotion_valid": true
+        },
+        {
+            "time": 3.97,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Right",
+            "head_yaw": 16.64,
+            "head_pitch": -1.61,
+            "head_roll": -1.45,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.9,
+            "emotion_valid": true
+        },
+        {
+            "time": 4.2,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Right",
+            "head_yaw": 17.18,
+            "head_pitch": -1.84,
+            "head_roll": -1.64,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 99.9,
+            "emotion_valid": true
+        },
+        {
+            "time": 4.44,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Right",
+            "head_yaw": 17.25,
+            "head_pitch": -2.45,
+            "head_roll": -1.71,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 4.67,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Right",
+            "head_yaw": 17.36,
+            "head_pitch": -3.29,
+            "head_roll": -1.71,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 4.9,
+            "eye_contact": "UNKNOWN",
+            "eye_score": 0.0,
+            "gaze": "Eyes unavailable",
+            "head_pose": "Looking Right",
+            "head_yaw": 17.49,
+            "head_pitch": -3.63,
+            "head_roll": -2.1,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 97.5,
+            "emotion_valid": true
+        },
+        {
+            "time": 5.14,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Right",
+            "head_yaw": 18.19,
+            "head_pitch": -4.18,
+            "head_roll": -2.47,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 97.5,
+            "emotion_valid": true
+        },
+        {
+            "time": 5.37,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Right",
+            "head_yaw": 18.49,
+            "head_pitch": -4.5,
+            "head_roll": -2.84,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 89.3,
+            "emotion_valid": true
+        },
+        {
+            "time": 5.61,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Right",
+            "head_yaw": 19.95,
+            "head_pitch": -4.69,
+            "head_roll": -4.45,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 89.3,
+            "emotion_valid": true
+        },
+        {
+            "time": 5.84,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Right",
+            "head_yaw": 21.18,
+            "head_pitch": -4.69,
+            "head_roll": -4.45,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 6.07,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Right",
+            "head_yaw": 21.39,
+            "head_pitch": -4.58,
+            "head_roll": -5.54,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 6.31,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Right",
+            "head_yaw": 22.26,
+            "head_pitch": -4.58,
+            "head_roll": -5.54,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        },
+        {
+            "time": 6.54,
+            "eye_contact": "CALIBRATING",
+            "eye_score": 0.0,
+            "gaze": "Calibrating",
+            "head_pose": "Looking Right",
+            "head_yaw": 22.71,
+            "head_pitch": -4.98,
+            "head_roll": -4.56,
+            "head_confidence": 95.0,
+            "emotion": "happy",
+            "emotion_confidence": 100.0,
+            "emotion_valid": true
+        }
+    ]
+}

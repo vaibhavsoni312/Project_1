@@ -1,0 +1,258 @@
+{
+  "deltas": [
+    {
+      "timestamp": 0.07,
+      "feature": "eye_contact",
+      "before": "UNKNOWN",
+      "after": "CALIBRATING"
+    },
+    {
+      "timestamp": 0.1,
+      "feature": "eye_contact",
+      "before": "CALIBRATING",
+      "after": "UNKNOWN"
+    },
+    {
+      "timestamp": 0.13,
+      "feature": "eye_contact",
+      "before": "UNKNOWN",
+      "after": "CALIBRATING"
+    },
+    {
+      "timestamp": 0.2,
+      "feature": "eye_contact",
+      "before": "CALIBRATING",
+      "after": "UNKNOWN"
+    },
+    {
+      "timestamp": 0.3,
+      "feature": "eye_contact",
+      "before": "UNKNOWN",
+      "after": "CALIBRATING"
+    },
+    {
+      "timestamp": 0.3,
+      "feature": "head_pose",
+      "before": "Center",
+      "after": "Looking Up"
+    },
+    {
+      "timestamp": 0.57,
+      "feature": "eye_contact",
+      "before": "CALIBRATING",
+      "after": "UNKNOWN"
+    },
+    {
+      "timestamp": 0.57,
+      "feature": "emotion",
+      "before": "neutral",
+      "after": "happy"
+    },
+    {
+      "timestamp": 0.6,
+      "feature": "eye_contact",
+      "before": "UNKNOWN",
+      "after": "CALIBRATING"
+    },
+    {
+      "timestamp": 0.7,
+      "feature": "eye_contact",
+      "before": "CALIBRATING",
+      "after": "UNKNOWN"
+    },
+    {
+      "timestamp": 0.73,
+      "feature": "eye_contact",
+      "before": "UNKNOWN",
+      "after": "CALIBRATING"
+    },
+    {
+      "timestamp": 0.83,
+      "feature": "emotion",
+      "before": "happy",
+      "after": "neutral"
+    },
+    {
+      "timestamp": 0.87,
+      "feature": "eye_contact",
+      "before": "CALIBRATING",
+      "after": "UNKNOWN"
+    },
+    {
+      "timestamp": 0.9,
+      "feature": "head_pose",
+      "before": "Looking Up",
+      "after": "Looking Left"
+    },
+    {
+      "timestamp": 1.1,
+      "feature": "emotion",
+      "before": "neutral",
+      "after": "happy"
+    },
+    {
+      "timestamp": 1.17,
+      "feature": "eye_contact",
+      "before": "UNKNOWN",
+      "after": "CALIBRATING"
+    },
+    {
+      "timestamp": 1.2,
+      "feature": "eye_contact",
+      "before": "CALIBRATING",
+      "after": "UNKNOWN"
+    },
+    {
+      "timestamp": 1.23,
+      "feature": "eye_contact",
+      "before": "UNKNOWN",
+      "after": "CALIBRATING"
+    },
+    {
+      "timestamp": 1.3,
+      "feature": "eye_contact",
+      "before": "CALIBRATING",
+      "after": "UNKNOWN"
+    },
+    {
+      "timestamp": 1.33,
+      "feature": "eye_contact",
+      "before": "UNKNOWN",
+      "after": "CALIBRATING"
+    },
+    {
+      "timestamp": 1.37,
+      "feature": "eye_contact",
+      "before": "CALIBRATING",
+      "after": "UNKNOWN"
+    },
+    {
+      "timestamp": 1.4,
+      "feature": "eye_contact",
+      "before": "UNKNOWN",
+      "after": "CALIBRATING"
+    },
+    {
+      "timestamp": 1.57,
+      "feature": "eye_contact",
+      "before": "CALIBRATING",
+      "after": "UNKNOWN"
+    },
+    {
+      "timestamp": 1.6,
+      "feature": "eye_contact",
+      "before": "UNKNOWN",
+      "after": "CALIBRATING"
+    },
+    {
+      "timestamp": 1.9,
+      "feature": "eye_contact",
+      "before": "CALIBRATING",
+      "after": "UNKNOWN"
+    },
+    {
+      "timestamp": 1.94,
+      "feature": "eye_contact",
+      "before": "UNKNOWN",
+      "after": "CALIBRATING"
+    },
+    {
+      "timestamp": 2.0,
+      "feature": "eye_contact",
+      "before": "CALIBRATING",
+      "after": "UNKNOWN"
+    },
+    {
+      "timestamp": 2.14,
+      "feature": "eye_contact",
+      "before": "UNKNOWN",
+      "after": "CALIBRATING"
+    },
+    {
+      "timestamp": 2.27,
+      "feature": "head_pose",
+      "before": "Looking Left",
+      "after": "Center"
+    },
+    {
+      "timestamp": 2.34,
+      "feature": "eye_contact",
+      "before": "CALIBRATING",
+      "after": "UNKNOWN"
+    },
+    {
+      "timestamp": 2.37,
+      "feature": "eye_contact",
+      "before": "UNKNOWN",
+      "after": "CALIBRATING"
+    },
+    {
+      "timestamp": 2.9,
+      "feature": "eye_contact",
+      "before": "CALIBRATING",
+      "after": "UNKNOWN"
+    },
+    {
+      "timestamp": 2.94,
+      "feature": "eye_contact",
+      "before": "UNKNOWN",
+      "after": "CALIBRATING"
+    },
+    {
+      "timestamp": 3.27,
+      "feature": "eye_contact",
+      "before": "CALIBRATING",
+      "after": "UNKNOWN"
+    },
+    {
+      "timestamp": 3.5,
+      "feature": "eye_contact",
+      "before": "UNKNOWN",
+      "after": "CALIBRATING"
+    },
+    {
+      "timestamp": 3.74,
+      "feature": "eye_contact",
+      "before": "CALIBRATING",
+      "after": "UNKNOWN"
+    },
+    {
+      "timestamp": 3.74,
+      "feature": "head_pose",
+      "before": "Center",
+      "after": "Looking Right"
+    },
+    {
+      "timestamp": 3.97,
+      "feature": "eye_contact",
+      "before": "UNKNOWN",
+      "after": "CALIBRATING"
+    },
+    {
+      "timestamp": 4.2,
+      "feature": "eye_contact",
+      "before": "CALIBRATING",
+      "after": "UNKNOWN"
+    },
+    {
+      "timestamp": 5.14,
+      "feature": "eye_contact",
+      "before": "UNKNOWN",
+      "after": "CALIBRATING"
+    }
+  ],
+  "feedback": [
+    {
+      "timestamp": 0.3,
+      "feedback": "Your head turned away from center (Looking Up). Keep facing the camera when possible."
+    },
+    {
+      "timestamp": 0.9,
+      "feedback": "Your head turned away from center (Looking Left). Keep facing the camera when possible."
+    },
+    {
+      "timestamp": 3.74,
+      "feedback": "Your head turned away from center (Looking Right). Keep facing the camera when possible."
+    }
+  ]
+}

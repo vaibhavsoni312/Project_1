@@ -13,11 +13,8 @@ from collections import deque
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 
-MODEL_PATH = (
-    BASE_DIR
-    / "models"
-    / "face_landmarker.task"
-)
+MODEL_PATH = BASE_DIR / "app" / "models" / "face_landmarker.task"
+
 
 if not MODEL_PATH.exists():
     raise FileNotFoundError(
