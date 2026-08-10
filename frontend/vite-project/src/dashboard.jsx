@@ -1,4 +1,4 @@
-import "./Dashboard.css";
+import "./dashboard.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getSessions } from "./api";

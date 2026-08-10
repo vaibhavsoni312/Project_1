@@ -3,3 +3,10 @@
 __pycache__/
 *.pyc
 .DS_Store.DS_Store
+# Test media files (personal recordings)
+sample.mp4
+sample.wav
+*.wav
+
+# Generated test outputs
+video_analysis.json

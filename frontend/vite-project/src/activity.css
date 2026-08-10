@@ -566,3 +566,35 @@
 
   gap: 9px;
 }
+.activity-back-button {
+  margin-bottom: 20px;
+
+  border: none;
+  background: transparent;
+
+  color: #8062c2;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.activity-back-button:hover {
+  color: #684ba8;
+  transform: translateX(-3px);
+}
+
+.activity-footer {
+  margin-top: 30px;
+  padding-top: 20px;
+
+  text-align: center;
+
+  border-top: 1px solid #ece8f1;
+
+  font-size: 11px;
+  color: #9a929f;
+}
